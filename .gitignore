@@ -60,3 +60,6 @@ Thumbs.db
 /phpunit.xml
 /.phpunit.cache/
 ###< phpunit/phpunit ###
+.env
+.env.dev
+.env.test
