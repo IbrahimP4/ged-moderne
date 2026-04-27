@@ -1,0 +1,27 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": ["src"],
+        "excludes": [
+            "src/Infrastructure/Persistence/Migration"
+        ]
+    },
+    "testFramework": "pest",
+    "testFrameworkOptions": "--stop-on-failure",
+    "timeout": 10,
+    "threads": 4,
+    "minMsi": 70,
+    "minCoveredMsi": 85,
+    "mutators": {
+        "@default": true,
+        "UnwrapArrayFilter": false,
+        "UnwrapArrayMap": false
+    },
+    "logs": {
+        "text": "var/infection/infection.log",
+        "html": "var/infection/infection.html",
+        "json": "var/infection/infection.json",
+        "summary": "var/infection/summary.log"
+    },
+    "tmpDir": "var/infection/tmp"
+}

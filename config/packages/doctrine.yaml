@@ -1,0 +1,75 @@
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                url: '%env(resolve:DATABASE_URL)%'
+                server_version: '8.4'
+                profiling_collect_backtrace: '%kernel.debug%'
+                use_savepoints: true
+            legacy:
+                url: '%env(resolve:LEGACY_DATABASE_URL)%'
+
+        # Enregistrement des custom types pour nos Value Objects UUID
+        types:
+            document_id:          App\Infrastructure\Persistence\Doctrine\Type\DocumentIdType
+            signature_request_id: App\Infrastructure\Persistence\Doctrine\Type\SignatureRequestIdType
+            folder_id:            App\Infrastructure\Persistence\Doctrine\Type\FolderIdType
+            user_id:              App\Infrastructure\Persistence\Doctrine\Type\UserIdType
+            audit_log_id:         App\Infrastructure\Persistence\Doctrine\Type\AuditLogIdType
+            notification_id:      App\Infrastructure\Persistence\Doctrine\Type\NotificationIdType
+            message_id:           App\Infrastructure\Persistence\Doctrine\Type\MessageIdType
+            folder_permission_id: App\Infrastructure\Persistence\Doctrine\Type\FolderPermissionIdType
+
+    orm:
+        auto_generate_proxy_classes: true
+        enable_lazy_ghost_objects: true
+        report_fields_where_declared: true
+        validate_xml_mapping: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+
+        # Tous nos entités Domain sont mappées via PHP attributes
+        mappings:
+            App:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Domain'
+                prefix: 'App\Domain'
+                alias: App
+
+        controller_resolver:
+            auto_mapping: false
+
+when@test:
+    doctrine:
+        dbal:
+            connections:
+                default:
+                    url: 'sqlite:///%kernel.project_dir%/var/test.db'
+                    driver: pdo_sqlite
+                    server_version: '3'
+                legacy:
+                    url: 'sqlite:///%kernel.project_dir%/var/test_legacy.db'
+                    driver: pdo_sqlite
+                    server_version: '3'
+
+when@prod:
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system

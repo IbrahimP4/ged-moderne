@@ -1,0 +1,10 @@
+parameters:
+    ignoreErrors:
+        # Ce fichier sera VIDE au départ.
+        # Il sera généré automatiquement par : make stan-baseline
+        #
+        # PROCESSUS DE MIGRATION :
+        # 1. Au départ, make legacy-stan génère une baseline du legacy.
+        # 2. Ce fichier NE CONCERNE QUE le nouveau code src/.
+        # 3. Chaque sprint, on réduit les erreurs → jamais on n'en ajoute.
+        # 4. Objectif final : fichier vide = level 9 clean.

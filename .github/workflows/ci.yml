@@ -1,0 +1,243 @@
+name: CI — GED Moderne
+
+on:
+  push:
+    branches: [main, develop, 'feature/**', 'fix/**']
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PHP_VERSION: '8.4'
+
+jobs:
+  # ════════════════════════════════════════════════════════════════════════════
+  # Job 1 : Code Quality (rapide, bloquant)
+  # ════════════════════════════════════════════════════════════════════════════
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: intl, mbstring, pdo, pdo_sqlite, zip, sodium, apcu
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: PHP-CS-Fixer (PER 3.0)
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+      - name: Rector (dry-run)
+        run: vendor/bin/rector process --dry-run --no-progress-bar
+
+      - name: PHPStan (level 9)
+        run: vendor/bin/phpstan analyse --memory-limit=1G --error-format=github
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # Job 2 : Tests unitaires (aucune dépendance externe)
+  # ════════════════════════════════════════════════════════════════════════════
+  tests-unit:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ env.PHP_VERSION }} + Xdebug
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: intl, mbstring, pdo, pdo_sqlite, zip, sodium, apcu
+          coverage: xdebug
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run Unit Tests with coverage
+        run: vendor/bin/pest --testsuite=unit --coverage --coverage-clover=coverage.xml --min=80
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          file: coverage.xml
+          flags: unit
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # Job 3 : Tests d'intégration (SQLite in-process, pas de service DB)
+  # ════════════════════════════════════════════════════════════════════════════
+  tests-integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: intl, mbstring, pdo, pdo_sqlite, zip, sodium, apcu
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Prepare test environment
+        run: |
+          mkdir -p var/storage/test
+          php bin/console cache:clear --env=test
+
+      - name: Run Integration Tests
+        run: vendor/bin/pest --testsuite=integration --no-coverage
+        env:
+          APP_ENV: test
+          DATABASE_URL: sqlite:///%kernel.project_dir%/var/test.db
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # Job 4 : Tests fonctionnels (HTTP + SQLite)
+  # ════════════════════════════════════════════════════════════════════════════
+  tests-functional:
+    name: Functional Tests
+    runs-on: ubuntu-latest
+    needs: [tests-unit, tests-integration]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: intl, mbstring, pdo, pdo_sqlite, zip, sodium, apcu
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Generate JWT keys
+        run: php bin/console lexik:jwt:generate-keypair --overwrite --env=test
+        env:
+          APP_ENV: test
+
+      - name: Prepare test environment
+        run: |
+          mkdir -p var/storage/test
+          php bin/console cache:clear --env=test
+
+      - name: Run Functional Tests
+        run: vendor/bin/pest --testsuite=functional --no-coverage
+        env:
+          APP_ENV: test
+          DATABASE_URL: sqlite:///%kernel.project_dir%/var/test.db
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # Job 5 : Vérification des migrations (MySQL réel)
+  # Garantit que le schéma est toujours migratable depuis zéro
+  # ════════════════════════════════════════════════════════════════════════════
+  migrations-check:
+    name: Migrations Check (MySQL)
+    runs-on: ubuntu-latest
+    needs: quality
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root_secret
+          MYSQL_DATABASE: ged_test
+          MYSQL_USER: ged_user
+          MYSQL_PASSWORD: ged_password
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: intl, mbstring, pdo, pdo_mysql, zip, sodium, apcu
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run migrations from scratch
+        run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
+        env:
+          DATABASE_URL: mysql://ged_user:ged_password@127.0.0.1:3306/ged_test?serverVersion=8.4&charset=utf8mb4
+
+      - name: Validate schema vs migrations
+        run: php bin/console doctrine:schema:validate --env=test
+        env:
+          DATABASE_URL: mysql://ged_user:ged_password@127.0.0.1:3306/ged_test?serverVersion=8.4&charset=utf8mb4
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # Job 6 : Audit de sécurité des dépendances
+  # ════════════════════════════════════════════════════════════════════════════
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Composer audit (CVE check)
+        run: composer audit

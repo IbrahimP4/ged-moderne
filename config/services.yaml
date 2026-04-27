@@ -1,0 +1,59 @@
+parameters:
+    storage.local_path: '%env(resolve:STORAGE_LOCAL_PATH)%'
+    legacy.storage_dir: '%env(resolve:LEGACY_STORAGE_DIR)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+
+    # ── Binding interfaces → implémentations concrètes ────────────────────────
+
+    App\Domain\Document\Repository\DocumentRepositoryInterface:
+        class: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineDocumentRepository
+
+    App\Domain\Folder\Repository\FolderRepositoryInterface:
+        class: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineFolderRepository
+
+    App\Domain\User\Repository\UserRepositoryInterface:
+        class: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineUserRepository
+
+    App\Domain\Storage\Port\DocumentStorageInterface:
+        class: App\Infrastructure\Storage\FlysystemDocumentStorage
+
+    App\Domain\AuditLog\Repository\AuditLogRepositoryInterface:
+        class: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineAuditLogRepository
+
+    App\Domain\Notification\Repository\NotificationRepositoryInterface:
+        class: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineNotificationRepository
+
+    App\Domain\Messaging\Repository\MessageRepositoryInterface:
+        class: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineMessageRepository
+
+    App\Domain\Folder\Repository\FolderPermissionRepositoryInterface:
+        class: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineFolderPermissionRepository
+
+    App\Domain\Document\Repository\DocumentCommentRepositoryInterface:
+        class: App\Infrastructure\Persistence\Doctrine\Repository\DoctrineDocumentCommentRepository
+
+    App\Domain\Port\EventBusInterface:
+        class: App\Infrastructure\Messenger\MessengerEventBus
+        arguments:
+            $eventBus: '@messenger.default_bus'
+
+    # ── Flysystem : injection du bon filesystem dans le storage adapter ────────
+    App\Infrastructure\Storage\FlysystemDocumentStorage:
+        arguments:
+            $documentStorage: '@document.storage'
+
+    # ── Migration legacy : connexion DBAL SeedDMS + commandes ────────────────
+    App\Infrastructure\Migration\LegacySeedDmsReader:
+        arguments:
+            $legacyConnection: '@doctrine.dbal.legacy_connection'
+
+    App\UI\Console\Migration\MigrateDocumentsCommand:
+        arguments:
+            $legacyStorageDir: '%legacy.storage_dir%'

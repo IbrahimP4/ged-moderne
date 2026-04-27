@@ -1,0 +1,7 @@
+framework:
+    rate_limiter:
+        # Limite les tentatives de connexion : 10 tentatives / minute par IP
+        login_limiter:
+            policy: sliding_window
+            limit: 10
+            interval: '1 minute'

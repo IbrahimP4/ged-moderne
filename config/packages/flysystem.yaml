@@ -1,0 +1,33 @@
+flysystem:
+    storages:
+        # Stockage principal des documents (local ou S3 selon la config)
+        document.storage:
+            adapter: '%env(STORAGE_ADAPTER)%'
+            options:
+                directory: '%env(resolve:STORAGE_LOCAL_PATH)%'
+            visibility: private
+
+        # Stockage des previews/thumbnails (public)
+        preview.storage:
+            adapter: local
+            options:
+                directory: '%kernel.project_dir%/var/storage/previews'
+            visibility: public
+
+when@test:
+    flysystem:
+        storages:
+            document.storage:
+                adapter: local
+                options:
+                    directory: '%kernel.project_dir%/var/storage/test'
+                visibility: private
+
+when@dev:
+    flysystem:
+        storages:
+            document.storage:
+                adapter: local
+                options:
+                    directory: '%env(resolve:STORAGE_LOCAL_PATH)%'
+                visibility: private

@@ -1,0 +1,29 @@
+parameters:
+    level: 9
+
+    paths:
+        - src
+
+    # ── Symfony ───────────────────────────────────────────────────────────────
+    symfony:
+        containerXmlPath: var/cache/test/App_KernelTestDebugContainer.xml
+        consoleApplicationLoader: tests/bootstrap_console.php
+
+    # ── Doctrine ──────────────────────────────────────────────────────────────
+    doctrine:
+        objectManagerLoader: tests/bootstrap_doctrine.php
+
+    # ── Règles strictes ───────────────────────────────────────────────────────
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false
+
+    # ── Exclusions légitimes ──────────────────────────────────────────────────
+    ignoreErrors: []
+
+    excludePaths:
+        - src/Infrastructure/Persistence/Migration
+        - var/
+
+    # ── Parallel ──────────────────────────────────────────────────────────────
+    parallel:
+        maximumNumberOfProcesses: 4

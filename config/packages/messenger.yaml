@@ -1,0 +1,48 @@
+framework:
+    messenger:
+        failure_transport: failed
+
+        transports:
+            # Synchrone : traitement inline, pas de worker nécessaire (dev / fallback)
+            sync:
+                dsn: 'sync://'
+
+            # Asynchrone prod : nécessite bin/console messenger:consume async
+            async:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                retry_strategy:
+                    max_retries: 3
+                    multiplier: 2
+                    delay: 1000
+
+            # File des messages en échec pour ré-injection manuelle
+            failed:
+                dsn: 'doctrine://default?queue_name=failed'
+
+        routing:
+            # Domain Events → async en prod
+            App\Domain\Document\Event\DocumentUploaded:      async
+            App\Domain\Document\Event\DocumentVersionAdded:  async
+            App\Domain\Document\Event\DocumentStatusChanged: async
+            App\Domain\Document\Event\DocumentDeleted:       async
+
+when@dev:
+    framework:
+        messenger:
+            routing:
+                # Synchrone en dev pour faciliter le debug (pas besoin de worker)
+                App\Domain\Document\Event\DocumentUploaded:      sync
+                App\Domain\Document\Event\DocumentVersionAdded:  sync
+                App\Domain\Document\Event\DocumentStatusChanged: sync
+                App\Domain\Document\Event\DocumentDeleted:       sync
+
+when@test:
+    framework:
+        messenger:
+            routing:
+                # Synchrone en test : les listeners s'exécutent pendant la requête
+                # → on peut asserter les effets de bord (audit log) immédiatement
+                App\Domain\Document\Event\DocumentUploaded:      sync
+                App\Domain\Document\Event\DocumentVersionAdded:  sync
+                App\Domain\Document\Event\DocumentStatusChanged: sync
+                App\Domain\Document\Event\DocumentDeleted:       sync

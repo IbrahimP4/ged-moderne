@@ -1,0 +1,77 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Application\Document\Command\SubmitForReviewCommand;
+use App\Application\Document\Command\SubmitForReviewHandler;
+use App\Domain\Document\Entity\Document;
+use App\Domain\Document\Exception\DocumentNotFoundException;
+use App\Domain\Document\Repository\DocumentRepositoryInterface;
+use App\Domain\Document\ValueObject\DocumentId;
+use App\Domain\Folder\Entity\Folder;
+use App\Domain\Port\EventBusInterface;
+use App\Domain\Storage\ValueObject\StoragePath;
+use App\Domain\User\Entity\User;
+use App\Domain\User\Repository\UserRepositoryInterface;
+
+describe('SubmitForReviewHandler', function (): void {
+
+    beforeEach(function (): void {
+        $this->documentRepo = Mockery::mock(DocumentRepositoryInterface::class);
+        $this->userRepo     = Mockery::mock(UserRepositoryInterface::class);
+        $this->eventBus     = Mockery::mock(EventBusInterface::class);
+        $this->eventBus->shouldReceive('dispatch')->zeroOrMoreTimes();
+
+        $this->handler = new SubmitForReviewHandler(
+            documentRepository: $this->documentRepo,
+            userRepository: $this->userRepo,
+            eventBus: $this->eventBus,
+        );
+
+        $this->owner    = User::create('alice', 'alice@ged.test', '$2y$10$fakehash');
+        $this->folder   = Folder::createRoot('DRH', $this->owner);
+        $this->document = Document::upload(
+            title: 'Contrat',
+            folder: $this->folder,
+            owner: $this->owner,
+            mimeType: \App\Domain\Document\ValueObject\MimeType::fromString('application/pdf'),
+            fileSize: \App\Domain\Document\ValueObject\FileSize::fromBytes(1024),
+            originalFilename: 'contrat.pdf',
+            storagePath: StoragePath::fromString('documents/contrat.pdf'),
+        );
+    });
+
+    afterEach(fn () => Mockery::close());
+
+    it('soumet un document en révision avec succès', function (): void {
+        $this->documentRepo->shouldReceive('findById')->once()->andReturn($this->document);
+        $this->userRepo->shouldReceive('findById')->once()->andReturn($this->owner);
+        $this->documentRepo->shouldReceive('save')->once();
+
+        ($this->handler)(new SubmitForReviewCommand(
+            documentId: $this->document->getId(),
+            submittedBy: $this->owner->getId(),
+        ));
+
+        expect($this->document->getStatus()->value)->toBe('pending_review');
+    });
+
+    it('lève DocumentNotFoundException si le document n\'existe pas', function (): void {
+        $this->documentRepo->shouldReceive('findById')->once()->andReturn(null);
+
+        ($this->handler)(new SubmitForReviewCommand(
+            documentId: DocumentId::generate(),
+            submittedBy: $this->owner->getId(),
+        ));
+    })->throws(DocumentNotFoundException::class);
+
+    it('lève DomainException si l\'utilisateur n\'existe pas', function (): void {
+        $this->documentRepo->shouldReceive('findById')->once()->andReturn($this->document);
+        $this->userRepo->shouldReceive('findById')->once()->andReturn(null);
+
+        ($this->handler)(new SubmitForReviewCommand(
+            documentId: $this->document->getId(),
+            submittedBy: $this->owner->getId(),
+        ));
+    })->throws(\DomainException::class, 'Utilisateur introuvable.');
+});
