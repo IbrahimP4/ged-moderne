@@ -11,6 +11,7 @@ import { getFolder, getRootFolder, renameFolder, deleteFolder } from '@/api/fold
 import {
   bulkDeleteDocuments, bulkMoveDocuments, bulkExportDocuments,
 } from '@/api/documents'
+import { downloadAuthenticatedFile } from '@/lib/download'
 import { FolderTree } from '@/features/folders/FolderTree'
 import { CreateFolderModal } from '@/features/folders/CreateFolderModal'
 import { PermissionsModal } from '@/features/folders/PermissionsModal'
@@ -45,7 +46,7 @@ function RenameFolderModal({ open, onClose, onConfirm, loading, currentName }: {
     <Modal open={open} onClose={onClose} title="Renommer le dossier">
       <div className="space-y-4">
         <input autoFocus type="text" value={name} onChange={(e) => setName(e.target.value)} maxLength={255}
-          className="w-full px-3.5 py-2.5 rounded-lg border border-[#E8E8E8] text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] bg-white text-[#1A1A1A]"
+          className="w-full px-3.5 py-2.5 rounded-lg border border-base text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] bg-card text-primary"
           placeholder="Nom du dossier" />
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={onClose}>Annuler</Button>
@@ -60,25 +61,25 @@ function RenameFolderModal({ open, onClose, onConfirm, loading, currentName }: {
 
 export function FolderPage() {
   const { id } = useParams<{ id: string }>()
-  const qc      = useQueryClient()
+  const qc = useQueryClient()
   const isAdmin = useAuthStore((s) => s.isAdmin)
 
-  const [page, setPage]                 = useState(1)
+  const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState<DocumentStatus | 'all'>('all')
-  const [tagFilter, setTagFilter]       = useState<string | null>(null)
-  const [showUpload, setShowUpload]     = useState(false)
-  const [showCreate, setShowCreate]     = useState(false)
-  const [showRename, setShowRename]     = useState(false)
-  const [showDelete, setShowDelete]     = useState(false)
-  const [showFilters, setShowFilters]   = useState(false)
-  const [showPerms, setShowPerms]       = useState(false)
+  const [tagFilter, setTagFilter] = useState<string | null>(null)
+  const [showUpload, setShowUpload] = useState(false)
+  const [showCreate, setShowCreate] = useState(false)
+  const [showRename, setShowRename] = useState(false)
+  const [showDelete, setShowDelete] = useState(false)
+  const [showFilters, setShowFilters] = useState(false)
+  const [showPerms, setShowPerms] = useState(false)
 
   // ── Quick preview ───────────────────────────────────────────────────────────
   const [previewDoc, setPreviewDoc] = useState<DocumentDTO | null>(null)
 
   // ── Bulk selection state ────────────────────────────────────────────────────
-  const [bulkMode, setBulkMode]         = useState(false)
-  const [selected, setSelected]         = useState<Set<string>>(new Set())
+  const [bulkMode, setBulkMode] = useState(false)
+  const [selected, setSelected] = useState<Set<string>>(new Set())
   const [showBulkMove, setShowBulkMove] = useState(false)
   const [showBulkDelete, setShowBulkDelete] = useState(false)
   const [bulkExporting, setBulkExporting] = useState(false)
@@ -173,7 +174,7 @@ export function FolderPage() {
   }
 
   if (isLoading) return (
-    <div className="flex h-screen bg-[#F4F4F4]">
+    <div className="flex h-screen bg-page">
       <FolderTree onCreateFolder={() => setShowCreate(true)} />
       <div className="flex-1"><PageSpinner /></div>
     </div>
@@ -182,33 +183,33 @@ export function FolderPage() {
   if (isError || !data) return <div className="p-8 text-red-600">Erreur de chargement.</div>
 
   const currentFolder = data.folder
-  const folderId      = currentFolder?.id ?? ''
-  const totalPages    = Math.ceil(data.totalDocuments / data.pageSize)
-  const isRestricted  = currentFolder?.restricted ?? false
+  const folderId = currentFolder?.id ?? ''
+  const totalPages = Math.ceil(data.totalDocuments / data.pageSize)
+  const isRestricted = currentFolder?.restricted ?? false
 
   const filteredDocs = data.documents
     .filter((doc) => statusFilter === 'all' || doc.status === statusFilter)
     .filter((doc) => !tagFilter || doc.tags.includes(tagFilter))
 
-  const allTags        = Array.from(new Set(data.documents.flatMap((d) => d.tags)))
+  const allTags = Array.from(new Set(data.documents.flatMap((d) => d.tags)))
   const hasActiveFilters = statusFilter !== 'all' || tagFilter !== null
-  const allSelected    = filteredDocs.length > 0 && selected.size === filteredDocs.length
+  const allSelected = filteredDocs.length > 0 && selected.size === filteredDocs.length
 
   return (
-    <div className="flex h-full overflow-hidden bg-[#F4F4F4]">
+    <div className="flex h-full overflow-hidden bg-page">
       <div className="hidden md:block">
         <FolderTree onCreateFolder={() => setShowCreate(true)} />
       </div>
 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* ── Header ─────────────────────────────────────────────────────── */}
-        <div className="bg-white border-b border-[#E8E8E8] px-4 sm:px-6 py-4">
-          <nav className="flex items-center gap-1.5 text-sm text-[#888] mb-3">
+        <div className="bg-card border-b border-base px-4 sm:px-6 py-4">
+          <nav className="flex items-center gap-1.5 text-sm text-muted mb-3">
             <Link to="/folders" className="hover:text-[#F5A800] transition-colors"><Home size={14} /></Link>
             {currentFolder && (
               <>
                 <ChevronRight size={14} className="text-[#D0D0D0]" />
-                <span className="text-[#1A1A1A] font-medium">{currentFolder.name}</span>
+                <span className="text-primary font-medium">{currentFolder.name}</span>
                 {isRestricted && (
                   <span className="inline-flex items-center gap-1 ml-1 px-2 py-0.5 rounded-full bg-[#FFF8E6] text-[#F5A800] text-[11px] font-semibold">
                     <Lock size={10} /> Restreint
@@ -224,8 +225,8 @@ export function FolderPage() {
                 <FolderOpen size={20} className="text-[#F5A800]" />
               </div>
               <div>
-                <h1 className="text-lg font-black tracking-tight text-[#1A1A1A]">{currentFolder?.name ?? 'Documents'}</h1>
-                <p className="text-xs text-[#888]">
+                <h1 className="text-lg font-black tracking-tight text-primary">{currentFolder?.name ?? 'Documents'}</h1>
+                <p className="text-xs text-muted">
                   {data.totalDocuments} document{data.totalDocuments !== 1 ? 's' : ''}
                   {data.subfolders.length > 0 && ` · ${data.subfolders.length} sous-dossier${data.subfolders.length !== 1 ? 's' : ''}`}
                 </p>
@@ -242,11 +243,11 @@ export function FolderPage() {
               {id && (
                 <>
                   <button onClick={() => setShowRename(true)} title="Renommer"
-                    className="p-1.5 rounded-lg text-[#888] hover:text-[#F5A800] hover:bg-[#FFFBF0] transition-colors">
+                    className="p-1.5 rounded-lg text-muted hover:text-[#F5A800] hover:bg-[#FFFBF0] transition-colors">
                     <Pencil size={15} />
                   </button>
                   <button onClick={() => setShowDelete(true)} title="Supprimer"
-                    className="p-1.5 rounded-lg text-[#888] hover:text-red-600 hover:bg-red-50 transition-colors">
+                    className="p-1.5 rounded-lg text-muted hover:text-red-600 hover:bg-red-50 transition-colors">
                     <Trash2 size={15} />
                   </button>
                 </>
@@ -256,11 +257,10 @@ export function FolderPage() {
               <button
                 onClick={() => { setBulkMode(!bulkMode); setSelected(new Set()) }}
                 title="Sélection multiple"
-                className={`p-1.5 rounded-lg transition-colors ${
-                  bulkMode
-                    ? 'bg-[#F5A800] text-[#1A1A1A]'
-                    : 'text-[#888] hover:text-[#F5A800] hover:bg-[#FFFBF0]'
-                }`}
+                className={`p-1.5 rounded-lg transition-colors ${bulkMode
+                    ? 'bg-[#F5A800] text-primary'
+                    : 'text-muted hover:text-[#F5A800] hover:bg-[#FFFBF0]'
+                  }`}
               >
                 <Layers size={15} />
               </button>
@@ -274,10 +274,11 @@ export function FolderPage() {
               </Button>
               {folderId && (
                 <>
-                  <a href={`/api/folders/${folderId}/export`} download
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-[#333] bg-[#F5F5F5] border border-[#D0D0D0] hover:bg-[#EAEAEA] transition-all">
+                  <button
+                    onClick={() => downloadAuthenticatedFile(`/api/folders/${folderId}/export`, `${currentFolder?.name ?? 'dossier'}.zip`)}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-primary bg-muted border border-strong hover:bg-border transition-all">
                     <Download size={15} />ZIP
-                  </a>
+                  </button>
                   <Button size="sm" onClick={() => setShowUpload(true)}>
                     <Upload size={15} />Importer
                   </Button>
@@ -288,15 +289,15 @@ export function FolderPage() {
 
           {/* Filter bar */}
           {showFilters && (
-            <div className="mt-3 pt-3 border-t border-[#E8E8E8] flex items-center gap-3 flex-wrap">
+            <div className="mt-3 pt-3 border-t border-base flex items-center gap-3 flex-wrap">
               <select value={statusFilter}
                 onChange={(e) => { setStatusFilter(e.target.value as DocumentStatus | 'all'); setPage(1) }}
-                className="text-sm border border-[#E8E8E8] rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#F5A800] bg-white text-[#333]">
+                className="text-sm border border-base rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#F5A800] bg-card text-primary">
                 {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
               {allTags.length > 0 && (
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-xs text-[#888]">Tags :</span>
+                  <span className="text-xs text-muted">Tags :</span>
                   {allTags.map((tag) => (
                     <button key={tag} onClick={() => setTagFilter(tagFilter === tag ? null : tag)}>
                       <TagBadge tag={tag}
@@ -321,16 +322,16 @@ export function FolderPage() {
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-1 h-5 bg-[#F5A800] rounded-full" />
-                <h2 className="text-xs font-semibold text-[#555] uppercase tracking-widest">Sous-dossiers</h2>
+                <h2 className="text-xs font-semibold text-secondary uppercase tracking-widest">Sous-dossiers</h2>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                 {data.subfolders.map((folder) => (
                   <Link key={folder.id} to={`/folders/${folder.id}`}
-                    className="relative flex flex-col items-center gap-2 p-3 rounded-lg bg-white border border-[#E8E8E8] hover:border-[#F5A800] hover:bg-[#FFFBF0] transition-all group">
+                    className="relative flex flex-col items-center gap-2 p-3 rounded-lg bg-card border border-base hover:border-[#F5A800] hover:bg-[#FFFBF0] transition-all group">
                     <div className="w-10 h-10 bg-[#1A1A1A] rounded-lg flex items-center justify-center group-hover:bg-[#2A2A2A] transition-colors">
                       <FolderOpen size={20} className="text-[#F5A800]" />
                     </div>
-                    <span className="text-xs text-[#333] font-medium text-center leading-tight line-clamp-2">{folder.name}</span>
+                    <span className="text-xs text-primary font-medium text-center leading-tight line-clamp-2">{folder.name}</span>
                     {folder.restricted && <Lock size={10} className="absolute top-2 right-2 text-[#F5A800]" />}
                   </Link>
                 ))}
@@ -342,23 +343,23 @@ export function FolderPage() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-1 h-5 bg-[#F5A800] rounded-full" />
-                <h2 className="text-xs font-semibold text-[#555] uppercase tracking-widest">
+                <h2 className="text-xs font-semibold text-secondary uppercase tracking-widest">
                   Documents
                   {hasActiveFilters && <span className="ml-2 text-[#F5A800] normal-case font-normal">({filteredDocs.length} résultat{filteredDocs.length !== 1 ? 's' : ''})</span>}
                 </h2>
                 {bulkMode && (
-                  <span className="ml-auto text-xs text-[#888]">
+                  <span className="ml-auto text-xs text-muted">
                     {selected.size} sélectionné{selected.size !== 1 ? 's' : ''}
                   </span>
                 )}
               </div>
-              <div className="bg-white rounded-lg border border-[#E8E8E8] overflow-hidden">
+              <div className="bg-card rounded-lg border border-base overflow-hidden">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-[#E8E8E8] bg-[#F5F5F5]">
+                    <tr className="border-b border-base bg-muted">
                       {bulkMode && (
                         <th className="pl-4 pr-2 py-3 w-8">
-                          <button onClick={toggleSelectAll} className="text-[#888] hover:text-[#F5A800] transition-colors">
+                          <button onClick={toggleSelectAll} className="text-muted hover:text-[#F5A800] transition-colors">
                             {allSelected
                               ? <CheckSquare size={16} className="text-[#F5A800]" />
                               : <Square size={16} />
@@ -366,14 +367,14 @@ export function FolderPage() {
                           </button>
                         </th>
                       )}
-                      <th className="text-left px-4 py-3 text-xs font-semibold text-[#555] uppercase tracking-widest">Nom</th>
-                      <th className="text-left px-4 py-3 text-xs font-semibold text-[#555] uppercase tracking-widest">Statut</th>
-                      <th className="text-left px-4 py-3 text-xs font-semibold text-[#555] uppercase tracking-widest hidden md:table-cell">Taille</th>
-                      <th className="text-left px-4 py-3 text-xs font-semibold text-[#555] uppercase tracking-widest hidden lg:table-cell">Modifié</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-secondary uppercase tracking-widest">Nom</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-secondary uppercase tracking-widest">Statut</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-secondary uppercase tracking-widest hidden md:table-cell">Taille</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-secondary uppercase tracking-widest hidden lg:table-cell">Modifié</th>
                       <th className="px-4 py-3" />
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E8E8E8]">
+                  <tbody className="divide-y divide-base">
                     {filteredDocs.map((doc) => (
                       <DocumentRow
                         key={doc.id}
@@ -394,19 +395,19 @@ export function FolderPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 bg-[#F5F5F5] rounded-lg border border-[#E8E8E8] flex items-center justify-center mb-4">
-                <Upload size={28} className="text-[#888]" />
+              <div className="w-16 h-16 bg-muted rounded-lg border border-base flex items-center justify-center mb-4">
+                <Upload size={28} className="text-muted" />
               </div>
               {hasActiveFilters ? (
                 <>
-                  <p className="text-[#333] font-semibold">Aucun document pour ces filtres</p>
+                  <p className="text-primary font-semibold">Aucun document pour ces filtres</p>
                   <button onClick={() => { setStatusFilter('all'); setTagFilter(null) }}
                     className="mt-2 text-sm text-[#F5A800] hover:underline">Effacer les filtres</button>
                 </>
               ) : (
                 <>
-                  <p className="text-[#333] font-semibold">Aucun document</p>
-                  <p className="text-[#888] text-sm mt-1">Importez votre premier fichier</p>
+                  <p className="text-primary font-semibold">Aucun document</p>
+                  <p className="text-muted text-sm mt-1">Importez votre premier fichier</p>
                   {folderId && (
                     <Button className="mt-4" size="sm" onClick={() => setShowUpload(true)}>
                       <Upload size={15} />Importer un document
@@ -420,7 +421,7 @@ export function FolderPage() {
 
         {/* ── Bulk action bar (floating) ──────────────────────────────────── */}
         {bulkMode && selected.size > 0 && (
-          <div className="border-t border-[#E8E8E8] bg-[#1A1A1A] px-4 py-3 flex items-center gap-3 flex-wrap">
+          <div className="border-t border-base bg-[#1A1A1A] px-4 py-3 flex items-center gap-3 flex-wrap">
             <span className="text-sm font-semibold text-white">
               {selected.size} document{selected.size !== 1 ? 's' : ''} sélectionné{selected.size !== 1 ? 's' : ''}
             </span>
@@ -459,7 +460,7 @@ export function FolderPage() {
 
         {/* Bulk mode hint bar */}
         {bulkMode && selected.size === 0 && (
-          <div className="border-t border-[#E8E8E8] bg-[#1A1A1A] px-4 py-2.5 flex items-center justify-between">
+          <div className="border-t border-base bg-[#1A1A1A] px-4 py-2.5 flex items-center justify-between">
             <span className="text-xs text-gray-500">Cliquez sur les lignes pour sélectionner des documents</span>
             <button onClick={exitBulkMode} className="text-xs text-gray-500 hover:text-white transition-colors flex items-center gap-1">
               <X size={12} />Quitter la sélection

@@ -43,7 +43,7 @@ export function TrashPage() {
   if (isLoading) return <PageSpinner />
 
   return (
-    <div className="min-h-full bg-[#F4F4F4]">
+    <div className="min-h-full bg-page">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
 
         {/* Page header */}
@@ -51,8 +51,8 @@ export function TrashPage() {
           <div className="flex items-center gap-3">
             <div className="w-1 h-8 bg-[#F5A800] rounded-full" />
             <div>
-              <p className="text-xs font-bold text-[#555] uppercase tracking-widest">Corbeille</p>
-              <p className="text-xs text-[#999] mt-0.5">{docs?.length ?? 0} document(s) supprimé(s)</p>
+              <p className="text-xs font-bold text-secondary uppercase tracking-widest">Corbeille</p>
+              <p className="text-xs text-muted mt-0.5">{docs?.length ?? 0} document(s) supprimé(s)</p>
             </div>
           </div>
           <div className="w-9 h-9 bg-[#FEE8E8] rounded-lg flex items-center justify-center">
@@ -62,31 +62,31 @@ export function TrashPage() {
 
         {/* Content */}
         {docs?.length === 0 ? (
-          <div className="bg-white rounded-lg border border-[#E8E8E8] p-14 flex flex-col items-center justify-center text-center">
-            <div className="w-14 h-14 bg-[#F5F5F5] rounded-lg flex items-center justify-center mb-4">
+          <div className="bg-card rounded-lg border border-base p-14 flex flex-col items-center justify-center text-center">
+            <div className="w-14 h-14 bg-muted rounded-lg flex items-center justify-center mb-4">
               <Trash2 size={28} style={{ color: '#E0E0E0' }} />
             </div>
             <p className="text-sm font-semibold" style={{ color: '#AAA' }}>La corbeille est vide</p>
             <p className="text-xs mt-1" style={{ color: '#CCC' }}>Les documents supprimés apparaîtront ici.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg border border-[#E8E8E8] overflow-hidden">
+          <div className="bg-card rounded-lg border border-base overflow-hidden">
 
             {/* List header */}
-            <div className="px-5 py-3 border-b border-[#F0F0F0] bg-[#FAFAFA]">
+            <div className="px-5 py-3 border-b border-muted bg-subtle">
               <div className="flex items-center gap-2">
                 <div className="w-1 h-4 bg-[#F5A800] rounded-full" />
-                <h2 className="text-xs font-bold text-[#555] uppercase tracking-widest">Documents supprimés</h2>
+                <h2 className="text-xs font-bold text-secondary uppercase tracking-widest">Documents supprimés</h2>
               </div>
             </div>
 
-            <div className="divide-y divide-[#F0F0F0]">
+            <div className="divide-y divide-muted">
               {(docs ?? []).map((doc) => (
                 <div
                   key={doc.id}
-                  className="flex items-center gap-4 px-5 py-4 hover:bg-[#FAFAFA] transition-colors"
+                  className="flex items-center gap-4 px-5 py-4 hover:bg-subtle transition-colors"
                 >
-                  <div className="w-9 h-9 rounded-md bg-[#F5F5F5] flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center shrink-0">
                     <FileText size={17} style={{ color: '#AAAAAA' }} />
                   </div>
 

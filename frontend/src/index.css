@@ -2,7 +2,6 @@
 
 @custom-variant dark (&:is(.dark, .dark *));
 
-/* ── Palette ENOF / Groupe Sonarem ─────────────────────────────────────────── */
 @theme {
   --color-brand-yellow:      #F5A800;
   --color-brand-yellow-dark: #D4920A;
@@ -11,17 +10,34 @@
   --color-brand-charcoal:    #1E1E1E;
   --color-brand-slate:       #2A2A2A;
   --color-brand-gray:        #6B6B6B;
+
+  --color-page:         var(--bg-page);
+  --color-card:         var(--bg-card);
+  --color-muted:        var(--bg-muted);
+  --color-subtle:       var(--bg-subtle);
+  --color-border:       var(--bg-border);
+  --color-border-muted: var(--bg-border-muted);
+  
+  --color-base:         var(--border);
+  --color-strong:       var(--border-strong);
+  
+  --color-primary:      var(--text-primary);
+  --color-secondary:    var(--text-secondary);
+  --color-faint:        var(--text-faint);
+  --color-ghost:        var(--text-ghost);
 }
 
-/* ── Semantic color tokens (light) ─────────────────────────────────────────── */
 :root {
   --bg-page:       #F4F4F4;
   --bg-card:       #FFFFFF;
   --bg-muted:      #F5F5F5;
   --bg-subtle:     #FAFAFA;
-  --bg-input:      #FFFFFF;
+  --bg-border:     #E8E8E8;
+  --bg-border-muted: #F0F0F0;
   --border:        #E8E8E8;
   --border-muted:  #F0F0F0;
+  --border-strong: #D0D0D0;
+  
   --text-primary:  #1A1A1A;
   --text-secondary:#555555;
   --text-muted:    #888888;
@@ -29,19 +45,21 @@
   --text-ghost:    #CCCCCC;
 }
 
-/* ── Semantic color tokens (dark) ───────────────────────────────────────────── */
 .dark {
-  --bg-page:       #111111;
-  --bg-card:       #1A1A1A;
-  --bg-muted:      #242424;
-  --bg-subtle:     #1E1E1E;
-  --bg-input:      #1E1E1E;
-  --border:        #2E2E2E;
-  --border-muted:  #222222;
-  --text-primary:  #EFEFEF;
-  --text-secondary:#A8A8A8;
-  --text-muted:    #707070;
-  --text-faint:    #505050;
+  --bg-page:       #0A0A0A;
+  --bg-card:       #141414;
+  --bg-muted:      #1E1E1E;
+  --bg-subtle:     #1A1A1A;
+  --bg-border:     #2A2A2A;
+  --bg-border-muted: #242424;
+  --border:        #2A2A2A;
+  --border-muted:  #242424;
+  --border-strong: #333333;
+  
+  --text-primary:  #EAEAEA;
+  --text-secondary:#A0A0A0;
+  --text-muted:    #737373;
+  --text-faint:    #555555;
   --text-ghost:    #404040;
 }
 
@@ -58,9 +76,9 @@ body {
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-page);
+  background-color: var(--bg-page);
   color: var(--text-primary);
-  transition: background 0.2s, color 0.2s;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -98,74 +116,66 @@ body {
   color: #E0E0E0;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════ */
-/* DARK MODE — systematic overrides for hardcoded color classes               */
-/* ═══════════════════════════════════════════════════════════════════════════ */
-
-/* ── Backgrounds ────────────────────────────────────────────────────────── */
-.dark .bg-white             { background-color: var(--bg-card)   !important; }
-.dark .bg-\[\#F4F4F4\]      { background-color: var(--bg-page)   !important; }
-.dark .bg-\[\#F5F5F5\]      { background-color: var(--bg-muted)  !important; }
-.dark .bg-\[\#FAFAFA\]      { background-color: var(--bg-subtle) !important; }
-.dark .bg-\[\#F0F0F0\]      { background-color: #222222          !important; }
-.dark .bg-\[\#FFFBF0\]      { background-color: rgba(245,168,0,.08) !important; }
-.dark .bg-\[\#FFF8E7\]      { background-color: rgba(245,168,0,.1)  !important; }
-.dark .bg-\[\#FFF3CC\]      { background-color: rgba(245,168,0,.15) !important; }
-.dark .bg-\[\#FEE8E8\]      { background-color: rgba(220,53,50,.15) !important; }
-.dark .min-h-screen         { background-color: var(--bg-page)   !important; }
-
-/* ── Borders ─────────────────────────────────────────────────────────────── */
-.dark .border-\[\#E8E8E8\]  { border-color: var(--border)       !important; }
-.dark .border-\[\#F0F0F0\]  { border-color: var(--border-muted) !important; }
-.dark .border-\[\#E0E0E0\]  { border-color: #2E2E2E             !important; }
-.dark .border-\[\#D0D0D0\]  { border-color: #303030             !important; }
-.dark .border-b             { border-color: var(--border)       !important; }
-.dark .border-t             { border-color: var(--border)       !important; }
-
-/* ── Dividers ────────────────────────────────────────────────────────────── */
-.dark .divide-\[\#E8E8E8\] > * + * { border-color: var(--border)       !important; }
-.dark .divide-\[\#F0F0F0\] > * + * { border-color: var(--border-muted) !important; }
-
-/* ── Text ────────────────────────────────────────────────────────────────── */
-.dark .text-\[\#1A1A1A\]    { color: var(--text-primary)   !important; }
-.dark .text-\[\#141414\]    { color: var(--text-primary)   !important; }
-.dark .text-\[\#333\]       { color: #E0E0E0               !important; }
-.dark .text-\[\#444\]       { color: #D5D5D5               !important; }
-.dark .text-\[\#555\]       { color: var(--text-secondary) !important; }
-.dark .text-\[\#666\]       { color: #909090               !important; }
-.dark .text-\[\#888\]       { color: var(--text-muted)     !important; }
-.dark .text-\[\#999\]       { color: #686868               !important; }
-.dark .text-\[\#AAAAAA\]    { color: var(--text-faint)     !important; }
-.dark .text-\[\#BBB\]       { color: #484848               !important; }
-.dark .text-\[\#CCCCCC\]    { color: var(--text-ghost)     !important; }
-
-/* ── Table / list headers ────────────────────────────────────────────────── */
-.dark thead tr               { background-color: #1E1E1E !important; }
-.dark .bg-\[\#F5F5F5\]       { background-color: var(--bg-muted) !important; }
-
-/* ── Inputs & selects ────────────────────────────────────────────────────── */
+/* ── Form elements in dark mode ───────────────────────────────────────────── */
 .dark input:not([type="checkbox"]):not([type="radio"]),
 .dark textarea,
 .dark select {
-  background-color: var(--bg-input) !important;
-  color: var(--text-primary)        !important;
-  border-color: var(--border)       !important;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border);
 }
 .dark input::placeholder,
-.dark textarea::placeholder { color: var(--text-faint) !important; }
+.dark textarea::placeholder {
+  color: var(--text-faint);
+}
 
-/* ── Hover states ────────────────────────────────────────────────────────── */
-.dark .hover\:bg-\[\#FAFAFA\]:hover  { background-color: #222222 !important; }
-.dark .hover\:bg-\[\#FFFBF0\]:hover  { background-color: rgba(245,168,0,.08) !important; }
-.dark .hover\:bg-\[\#F5F5F5\]:hover  { background-color: var(--bg-muted) !important; }
-.dark .hover\:bg-\[\#EAEAEA\]:hover  { background-color: #282828 !important; }
+/* Table headers */
+.dark thead tr { background-color: var(--bg-subtle); }
 
-/* ── Status badges (keep them visible in dark) ───────────────────────────── */
-.dark .bg-green-50   { background-color: rgba(34,197,94,.1)  !important; }
-.dark .bg-red-50     { background-color: rgba(239,68,68,.1)  !important; }
-.dark .border-green-100 { border-color: rgba(34,197,94,.25)  !important; }
-.dark .border-red-100   { border-color: rgba(239,68,68,.25)  !important; }
+/* ═══════════════════════════════════════════════════════════════════════════ */
+/* STATUS BADGES & COLORS (Direct Tailwind Dark Variant usage where possible, 
+   but providing a fallback for hardcoded classes)
+/* ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Dashboard area chart background ────────────────────────────────────── */
-.dark .recharts-cartesian-grid line { stroke: #2A2A2A !important; }
-.dark .recharts-tooltip-wrapper .recharts-tooltip-item { color: #F0F0F0 !important; }
+/* Recharts overrides */
+.dark .recharts-cartesian-grid line { stroke: var(--border); }
+.dark .recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+.dark .recharts-tooltip-item { color: var(--text-primary) !important; }
+.dark .recharts-tooltip-label { color: var(--text-secondary) !important; }
+.dark .recharts-legend-item-text { color: var(--text-secondary) !important; }
+.dark .recharts-text { fill: var(--text-muted) !important; }
+
+/* Dashboard Cards (some are still hardcoded yellow for branding) */
+.dark .bg-\[\#FFF8E7\] { background-color: rgba(245,168,0,.08); }
+.dark .bg-\[\#FFF3CC\] { background-color: rgba(245,168,0,.12); }
+.dark .bg-\[\#FFFBF0\] { background-color: rgba(245,168,0,.06); }
+.dark .bg-\[\#FFE999\] { background-color: rgba(245,168,0,.15); }
+.dark .bg-\[\#FFE79A\] { background-color: rgba(245,168,0,.15); }
+
+.dark .hover\:bg-\[\#FFF8E7\]:hover { background-color: rgba(245,168,0,.10); }
+.dark .hover\:bg-\[\#FFF3CC\]:hover { background-color: rgba(245,168,0,.15); }
+.dark .hover\:bg-\[\#FFFBF0\]:hover { background-color: rgba(245,168,0,.08); }
+
+/* Status backgrounds in dark mode (opacity adjustments) */
+.dark .bg-green-50  { background-color: rgba(34,197,94,.12); }
+.dark .bg-red-50    { background-color: rgba(239,68,68,.12); }
+.dark .bg-amber-50  { background-color: rgba(245,168,0,.12); }
+.dark .bg-blue-50   { background-color: rgba(59,130,246,.12); }
+.dark .bg-purple-50 { background-color: rgba(139,92,246,.12); }
+.dark .bg-teal-50   { background-color: rgba(20,184,166,.12); }
+.dark .bg-sky-50    { background-color: rgba(14,165,233,.12); }
+.dark .bg-red-100   { background-color: rgba(239,68,68,.18); }
+
+.dark .border-green-100 { border-color: rgba(34,197,94,.25); }
+.dark .border-red-100   { border-color: rgba(239,68,68,.25); }
+.dark .border-amber-100 { border-color: rgba(245,168,0,.25); }
+.dark .border-red-200   { border-color: rgba(239,68,68,.30); }
+
+/* Modals & Dropdowns shadow */
+.dark .shadow-sm { box-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+.dark .shadow-lg { box-shadow: 0 10px 15px rgba(0,0,0,0.5); }
+.dark .shadow-xl { box-shadow: 0 20px 25px rgba(0,0,0,0.5); }

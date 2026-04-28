@@ -27,3 +27,7 @@ export async function createUser(payload: CreateUserPayload): Promise<{ id: stri
 export async function changeUserRole(userId: string, makeAdmin: boolean): Promise<void> {
   await api.patch(`/admin/users/${userId}/role`, { make_admin: makeAdmin })
 }
+
+export async function deleteUser(userId: string): Promise<void> {
+  await api.delete(`/admin/users/${userId}`)
+}

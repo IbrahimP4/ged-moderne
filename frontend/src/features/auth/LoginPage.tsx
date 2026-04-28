@@ -61,7 +61,7 @@ export function LoginPage() {
         <div className="relative z-10 text-center max-w-sm">
           <div className="flex items-center justify-center gap-5 mb-8">
             <img src="/logoEnof.jpeg" alt="ENOF" className="w-20 h-20 rounded-xl object-cover shadow-2xl" />
-            <div className="w-px h-16 bg-white/20" />
+            <div className="w-px h-16 bg-card/20" />
             <img src="/logoSonarem.png" alt="Sonarem" className="w-20 h-20 rounded-full object-cover shadow-2xl" />
           </div>
           <h1 className="text-3xl font-black text-white tracking-tight mb-2">
@@ -77,7 +77,7 @@ export function LoginPage() {
               { label: 'Traçable', desc: 'Audit complet' },
               { label: 'Efficace', desc: 'Zéro papier' },
             ].map((f) => (
-              <div key={f.label} className="bg-white/5 rounded-lg p-3 border border-white/10">
+              <div key={f.label} className="bg-card/5 rounded-lg p-3 border border-white/10">
                 <p className="text-[#F5A800] font-bold text-sm">{f.label}</p>
                 <p className="text-gray-500 text-xs mt-0.5">{f.desc}</p>
               </div>
@@ -91,46 +91,49 @@ export function LoginPage() {
       </div>
 
       {/* ── Panneau droit — formulaire ─────────────────────────────────── */}
-      <div className="flex-1 flex flex-col items-center justify-center bg-[#F4F4F4] p-6">
+      <div className="flex-1 flex flex-col items-center justify-center bg-page p-6">
         {/* Logo mobile */}
         <div className="lg:hidden flex flex-col items-center mb-8">
           <div className="flex items-center gap-3 mb-3">
             <img src="/logoEnof.jpeg" alt="ENOF" className="w-12 h-12 rounded-lg object-cover" />
             <img src="/logoSonarem.png" alt="Sonarem" className="w-12 h-12 rounded-full object-cover" />
           </div>
-          <h1 className="text-xl font-black text-[#1A1A1A] tracking-tight">
+          <h1 className="text-xl font-black text-primary tracking-tight">
             GED <span className="text-[#F5A800]">ENOF</span>
           </h1>
         </div>
 
         <div className="w-full max-w-sm">
           {/* Card */}
-          <div className="bg-white rounded-lg shadow-lg border border-[#E8E8E8] overflow-hidden">
+          <div className="bg-card rounded-lg shadow-lg border border-base overflow-hidden">
             {/* Barre jaune en haut */}
             <div className="h-1.5 w-full bg-[#F5A800]" />
 
             <div className="p-8">
-              <h2 className="text-lg font-bold text-[#1A1A1A] mb-1 tracking-tight">
+              <h2 className="text-lg font-bold text-primary mb-1 tracking-tight">
                 Connexion
               </h2>
-              <p className="text-sm text-[#888] mb-6">Accès réservé aux agents ENOF</p>
+              <p className="text-sm text-muted mb-6">Accès réservé aux agents ENOF</p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Username */}
                 <div>
-                  <label className="block text-xs font-bold text-[#555] mb-1.5 uppercase tracking-wide">
+                  <label className="block text-xs font-bold text-secondary mb-1.5 uppercase tracking-wide">
                     Identifiant
                   </label>
                   <div className="relative">
-                    <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#999]" />
+                    <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
                     <input
                       type="text"
                       required
                       autoFocus
+                      autoCapitalize="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      className="w-full pl-9 pr-3.5 py-2.5 rounded-md border border-[#D0D0D0] text-sm
-                                 text-[#1A1A1A] bg-[#FAFAFA]
+                      className="w-full pl-9 pr-3.5 py-2.5 rounded-md border border-strong text-sm
+                                 text-primary bg-subtle
                                  focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800]
                                  transition-all placeholder-[#BBBBBB]"
                       placeholder="nom.prenom"
@@ -140,18 +143,20 @@ export function LoginPage() {
 
                 {/* Password */}
                 <div>
-                  <label className="block text-xs font-bold text-[#555] mb-1.5 uppercase tracking-wide">
+                  <label className="block text-xs font-bold text-secondary mb-1.5 uppercase tracking-wide">
                     Mot de passe
                   </label>
                   <div className="relative">
-                    <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#999]" />
+                    <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
                     <input
                       type={showPass ? 'text' : 'password'}
                       required
+                      autoCapitalize="off"
+                      autoCorrect="off"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-9 pr-10 py-2.5 rounded-md border border-[#D0D0D0] text-sm
-                                 text-[#1A1A1A] bg-[#FAFAFA]
+                      className="w-full pl-9 pr-10 py-2.5 rounded-md border border-strong text-sm
+                                 text-primary bg-subtle
                                  focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800]
                                  transition-all placeholder-[#BBBBBB]"
                       placeholder="••••••••"
@@ -159,7 +164,7 @@ export function LoginPage() {
                     <button
                       type="button"
                       onClick={() => setShowPass(!showPass)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#AAA] hover:text-[#555] transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-faint hover:text-secondary transition-colors"
                     >
                       {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                     </button>
@@ -185,7 +190,7 @@ export function LoginPage() {
             </div>
           </div>
 
-          <p className="text-center text-xs text-[#BBBBBB] mt-6">
+          <p className="text-center text-xs text-faint mt-6">
             © {new Date().getFullYear()} ENOF — Groupe Sonarem. Tous droits réservés.
           </p>
         </div>

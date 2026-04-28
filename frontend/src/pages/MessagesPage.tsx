@@ -54,7 +54,7 @@ function usePartnerPresence(username: string | null) {
 function PresenceIndicator({ username }: { username: string }) {
   const { data } = usePartnerPresence(username)
 
-  if (!data) return <p className="text-xs text-[#AAA]">...</p>
+  if (!data) return <p className="text-xs text-faint">...</p>
 
   if (data.online) {
     return (
@@ -76,7 +76,7 @@ function PresenceIndicator({ username }: { username: string }) {
     : null
 
   return (
-    <span className="flex items-center gap-1.5 text-xs text-[#AAA]">
+    <span className="flex items-center gap-1.5 text-xs text-faint">
       <span className="w-2 h-2 bg-[#CCC] rounded-full" />
       {lastSeenLabel ? `Vu ${lastSeenLabel}` : 'Hors ligne'}
     </span>
@@ -105,7 +105,7 @@ function Avatar({ username, size = 'md' }: { username: string; size?: 'sm' | 'md
     ? 'w-11 h-11 text-base rounded-lg'
     : 'w-9 h-9 text-sm rounded-md'
   return (
-    <div className={`${cls} bg-[#F5A800] flex items-center justify-center font-bold text-[#1A1A1A] shrink-0`}>
+    <div className={`${cls} bg-[#F5A800] flex items-center justify-center font-bold text-primary shrink-0`}>
       {username[0].toUpperCase()}
     </div>
   )
@@ -131,14 +131,14 @@ function ConversationList({
   return (
     <div className="flex flex-col h-full">
       {/* Searchbar */}
-      <div className="p-3 border-b border-[#E8E8E8]">
+      <div className="p-3 border-b border-base">
         <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AAA]" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-faint" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Rechercher une conversation…"
-            className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800]"
+            className="w-full pl-9 pr-3 py-2 text-sm bg-card border border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800]"
           />
         </div>
       </div>
@@ -146,7 +146,7 @@ function ConversationList({
       {/* Liste */}
       <div className="flex-1 overflow-y-auto">
         {filtered.length === 0 ? (
-          <div className="text-center py-10 text-sm text-[#AAA]">
+          <div className="text-center py-10 text-sm text-faint">
             Aucune conversation
           </div>
         ) : (
@@ -160,7 +160,7 @@ function ConversationList({
               <button
                 key={c.partner.id}
                 onClick={() => onSelect(c.partner.id, c.partner.username)}
-                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors border-b border-[#F0F0F0] hover:bg-[#FAFAFA] ${
+                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors border-b border-muted hover:bg-subtle ${
                   selectedId === c.partner.id
                     ? 'bg-[#FFF8E7] border-l-2 border-l-[#F5A800]'
                     : ''
@@ -169,21 +169,21 @@ function ConversationList({
                 <div className="relative shrink-0">
                   <Avatar username={c.partner.username} />
                   {c.unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#F5A800] text-[#1A1A1A] text-[10px] font-bold rounded-full flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#F5A800] text-primary text-[10px] font-bold rounded-full flex items-center justify-center">
                       {c.unreadCount > 9 ? '9+' : c.unreadCount}
                     </span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0 text-left">
                   <div className="flex justify-between items-baseline">
-                    <span className={`text-sm font-semibold ${c.unreadCount > 0 ? 'text-[#1A1A1A]' : 'text-[#555]'}`}>
+                    <span className={`text-sm font-semibold ${c.unreadCount > 0 ? 'text-primary' : 'text-secondary'}`}>
                       {c.partner.username}
                     </span>
-                    <span className="text-[11px] text-[#AAA] shrink-0 ml-2">
+                    <span className="text-[11px] text-faint shrink-0 ml-2">
                       {timeLabel(c.lastMessage.sentAt)}
                     </span>
                   </div>
-                  <p className={`text-xs truncate mt-0.5 ${c.unreadCount > 0 ? 'text-[#1A1A1A] font-medium' : 'text-[#888]'}`}>
+                  <p className={`text-xs truncate mt-0.5 ${c.unreadCount > 0 ? 'text-primary font-medium' : 'text-muted'}`}>
                     {preview}
                   </p>
                 </div>
@@ -208,7 +208,7 @@ function MessageBubble({ msg, isMe }: { msg: MessageDTO; isMe: boolean }) {
         {msg.documentId && (
           <a
             href={`/documents/${msg.documentId}`}
-            className="flex items-center gap-2 text-xs bg-white border border-[#E8E8E8] text-[#1A1A1A] rounded-md px-3 py-1.5 hover:border-[#F5A800] transition-colors"
+            className="flex items-center gap-2 text-xs bg-card border border-base text-primary rounded-md px-3 py-1.5 hover:border-[#F5A800] transition-colors"
           >
             <FileText size={12} className="text-[#F5A800]" />
             <span className="truncate max-w-[160px]">{msg.documentTitle ?? 'Document'}</span>
@@ -220,12 +220,12 @@ function MessageBubble({ msg, isMe }: { msg: MessageDTO; isMe: boolean }) {
           className={`px-4 py-2.5 rounded-md text-sm leading-relaxed ${
             isMe
               ? 'bg-[#1A1A1A] text-white rounded-br-sm'
-              : 'bg-[#F5F5F5] text-[#1A1A1A] rounded-bl-sm'
+              : 'bg-muted text-primary rounded-bl-sm'
           }`}
         >
           {msg.content}
         </div>
-        <span className="text-[10px] text-[#AAA] px-1">
+        <span className="text-[10px] text-faint px-1">
           {timeLabel(msg.sentAt)}
         </span>
       </div>
@@ -255,30 +255,30 @@ function DocumentPicker({
   })
 
   return (
-    <div className="absolute bottom-full left-0 mb-2 w-80 bg-white rounded-lg shadow-2xl border border-[#E8E8E8] z-50 overflow-hidden">
-      <div className="px-3 py-3 border-b border-[#E8E8E8] flex items-center justify-between">
-        <span className="text-sm font-semibold text-[#1A1A1A]">Joindre un document</span>
-        <button onClick={onClose} className="text-[#AAA] hover:text-[#555]">
+    <div className="absolute bottom-full left-0 mb-2 w-80 bg-card rounded-lg shadow-2xl border border-base z-50 overflow-hidden">
+      <div className="px-3 py-3 border-b border-base flex items-center justify-between">
+        <span className="text-sm font-semibold text-primary">Joindre un document</span>
+        <button onClick={onClose} className="text-faint hover:text-secondary">
           <X size={16} />
         </button>
       </div>
       <div className="p-2">
         <div className="relative mb-2">
-          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AAA]" />
+          <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-faint" />
           <input
             autoFocus
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Rechercher un document…"
-            className="w-full pl-8 pr-3 py-2 text-sm bg-white border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800]"
+            className="w-full pl-8 pr-3 py-2 text-sm bg-card border border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800]"
           />
         </div>
         <div className="max-h-56 overflow-y-auto space-y-0.5">
           {isLoading && (
-            <p className="text-xs text-[#AAA] text-center py-4">Recherche…</p>
+            <p className="text-xs text-faint text-center py-4">Recherche…</p>
           )}
           {!isLoading && results.length === 0 && (
-            <p className="text-xs text-[#AAA] text-center py-4">Aucun document trouvé</p>
+            <p className="text-xs text-faint text-center py-4">Aucun document trouvé</p>
           )}
           {results.map((doc) => (
             <button
@@ -287,11 +287,11 @@ function DocumentPicker({
               className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-[#FFF8E7] transition-colors text-left"
             >
               <div className="w-7 h-7 bg-[#F5A800] rounded-md flex items-center justify-center shrink-0">
-                <FileText size={14} className="text-[#1A1A1A]" />
+                <FileText size={14} className="text-primary" />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-medium text-[#1A1A1A] truncate">{doc.title}</p>
-                <p className="text-[11px] text-[#AAA] truncate">{doc.mimeType}</p>
+                <p className="text-sm font-medium text-primary truncate">{doc.title}</p>
+                <p className="text-[11px] text-faint truncate">{doc.mimeType}</p>
               </div>
             </button>
           ))}
@@ -361,18 +361,18 @@ function ChatThread({
   return (
     <div className="flex flex-col h-full">
       {/* Header avec indicateur de présence */}
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-[#E8E8E8] bg-white shrink-0">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-base bg-card shrink-0">
         <Avatar username={partnerUsername} />
         <div>
-          <p className="text-sm font-bold text-[#1A1A1A]">{partnerUsername}</p>
+          <p className="text-sm font-bold text-primary">{partnerUsername}</p>
           <PresenceIndicator username={partnerUsername} />
         </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 bg-[#F4F4F4]">
+      <div className="flex-1 overflow-y-auto px-5 py-4 bg-page">
         {messages.length === 0 && (
-          <div className="text-center py-10 text-[#AAA]">
+          <div className="text-center py-10 text-faint">
             <MessageCircle size={36} className="mx-auto mb-3 text-[#DDD]" />
             <p className="text-sm">Démarrez la conversation !</p>
           </div>
@@ -384,16 +384,16 @@ function ChatThread({
       </div>
 
       {/* Zone de saisie */}
-      <div className="px-4 py-3 border-t border-[#E8E8E8] bg-white shrink-0">
+      <div className="px-4 py-3 border-t border-base bg-card shrink-0">
 
         {/* Document attaché */}
         {attachedDoc && (
           <div className="flex items-center gap-2 mb-2 bg-[#FFF8E7] border border-[#F5A800] rounded-md px-3 py-2">
             <FileText size={14} className="text-[#F5A800] shrink-0" />
-            <span className="text-xs font-medium text-[#1A1A1A] flex-1 truncate">{attachedDoc.title}</span>
+            <span className="text-xs font-medium text-primary flex-1 truncate">{attachedDoc.title}</span>
             <button
               onClick={() => setAttachedDoc(null)}
-              className="text-[#AAA] hover:text-[#555]"
+              className="text-faint hover:text-secondary"
             >
               <X size={14} />
             </button>
@@ -408,7 +408,7 @@ function ChatThread({
               className={`w-10 h-10 rounded-md flex items-center justify-center transition-colors ${
                 showPicker || attachedDoc
                   ? 'bg-[#FFF8E7] text-[#F5A800]'
-                  : 'bg-[#F4F4F4] text-[#888] hover:bg-[#E8E8E8]'
+                  : 'bg-page text-muted hover:bg-border'
               }`}
               title="Joindre un document"
             >
@@ -423,14 +423,14 @@ function ChatThread({
           </div>
 
           {/* Textarea */}
-          <div className="flex-1 bg-white border border-[#E0E0E0] rounded-md px-4 py-2.5 focus-within:ring-2 focus-within:ring-[#F5A800] focus-within:border-[#F5A800] transition-all">
+          <div className="flex-1 bg-card border border-strong rounded-md px-4 py-2.5 focus-within:ring-2 focus-within:ring-[#F5A800] focus-within:border-[#F5A800] transition-all">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               onKeyDown={handleKey}
               placeholder={attachedDoc ? 'Ajouter un message (facultatif)…' : `Écrire à ${partnerUsername}…`}
               rows={1}
-              className="w-full bg-transparent text-sm text-[#1A1A1A] placeholder-[#AAA] resize-none outline-none max-h-32 leading-relaxed"
+              className="w-full bg-transparent text-sm text-primary placeholder-[#AAA] resize-none outline-none max-h-32 leading-relaxed"
               style={{ fieldSizing: 'content' } as React.CSSProperties}
             />
           </div>
@@ -439,12 +439,12 @@ function ChatThread({
           <button
             onClick={handleSend}
             disabled={!canSend}
-            className="w-10 h-10 bg-[#F5A800] hover:bg-[#E09700] text-[#1A1A1A] rounded-md flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+            className="w-10 h-10 bg-[#F5A800] hover:bg-[#E09700] text-primary rounded-md flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
           >
             <Send size={16} />
           </button>
         </div>
-        <p className="text-[10px] text-[#AAA] mt-1.5 pl-1">
+        <p className="text-[10px] text-faint mt-1.5 pl-1">
           Entrée pour envoyer · Shift+Entrée pour saut de ligne
         </p>
       </div>
@@ -518,21 +518,21 @@ export function MessagesPage() {
   if (convLoading) return <PageSpinner />
 
   return (
-    <div className="h-full flex overflow-hidden bg-[#F4F4F4]">
+    <div className="h-full flex overflow-hidden bg-page">
       {/* ── Colonne gauche : liste des conversations ── */}
-      <div className={`flex flex-col bg-white border-r border-[#E8E8E8] ${
+      <div className={`flex flex-col bg-card border-r border-base ${
         mobileView === 'chat' ? 'hidden md:flex' : 'flex'
       } w-full md:w-72 lg:w-80 shrink-0`}>
         {/* Header */}
-        <div className="px-4 py-4 border-b border-[#E8E8E8]">
+        <div className="px-4 py-4 border-b border-base">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <MessageCircle size={18} className="text-[#F5A800]" />
-              <h1 className="text-base font-bold text-[#1A1A1A]">Messages</h1>
+              <h1 className="text-base font-bold text-primary">Messages</h1>
             </div>
             <button
               onClick={() => setShowNewConv(true)}
-              className="w-8 h-8 bg-[#F5A800] hover:bg-[#E09700] text-[#1A1A1A] rounded-md flex items-center justify-center transition-colors"
+              className="w-8 h-8 bg-[#F5A800] hover:bg-[#E09700] text-primary rounded-md flex items-center justify-center transition-colors"
               title="Nouvelle conversation"
             >
               <Users size={14} />
@@ -543,11 +543,11 @@ export function MessagesPage() {
         {conversations.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
             <MessageCircle size={40} className="text-[#DDD] mb-3" />
-            <p className="text-sm font-medium text-[#555]">Aucune conversation</p>
-            <p className="text-xs text-[#AAA] mt-1 mb-4">Démarrez une nouvelle conversation</p>
+            <p className="text-sm font-medium text-secondary">Aucune conversation</p>
+            <p className="text-xs text-faint mt-1 mb-4">Démarrez une nouvelle conversation</p>
             <button
               onClick={() => setShowNewConv(true)}
-              className="flex items-center gap-2 bg-[#F5A800] hover:bg-[#E09700] text-[#1A1A1A] text-sm font-medium px-4 py-2 rounded-md transition-colors"
+              className="flex items-center gap-2 bg-[#F5A800] hover:bg-[#E09700] text-primary text-sm font-medium px-4 py-2 rounded-md transition-colors"
             >
               <Users size={14} /> Nouveau message
             </button>
@@ -571,7 +571,7 @@ export function MessagesPage() {
             {/* Bouton retour mobile */}
             <button
               onClick={() => setMobileView('list')}
-              className="md:hidden flex items-center gap-2 text-sm text-[#F5A800] px-4 py-2 border-b border-[#E8E8E8] bg-white"
+              className="md:hidden flex items-center gap-2 text-sm text-[#F5A800] px-4 py-2 border-b border-base bg-card"
             >
               <ArrowLeft size={16} /> Retour
             </button>
@@ -582,17 +582,17 @@ export function MessagesPage() {
             />
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-[#F4F4F4]">
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-page">
             <div className="w-20 h-20 bg-[#F5A800] rounded-lg flex items-center justify-center mb-4">
-              <MessageCircle size={36} className="text-[#1A1A1A]" />
+              <MessageCircle size={36} className="text-primary" />
             </div>
-            <h2 className="text-lg font-bold text-[#1A1A1A]">Messagerie GED</h2>
-            <p className="text-sm text-[#888] mt-2 max-w-xs">
+            <h2 className="text-lg font-bold text-primary">Messagerie GED</h2>
+            <p className="text-sm text-muted mt-2 max-w-xs">
               Sélectionnez une conversation ou démarrez-en une nouvelle pour communiquer avec vos collègues.
             </p>
             <button
               onClick={() => setShowNewConv(true)}
-              className="mt-5 flex items-center gap-2 bg-[#F5A800] hover:bg-[#E09700] text-[#1A1A1A] text-sm font-medium px-5 py-2.5 rounded-md transition-colors"
+              className="mt-5 flex items-center gap-2 bg-[#F5A800] hover:bg-[#E09700] text-primary text-sm font-medium px-5 py-2.5 rounded-md transition-colors"
             >
               <Users size={15} /> Nouvelle conversation
             </button>
@@ -603,25 +603,25 @@ export function MessagesPage() {
       {/* ── Modal : choisir un interlocuteur ── */}
       {showNewConv && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-2xl w-full max-w-sm overflow-hidden border border-[#E8E8E8]">
-            <div className="px-5 py-4 border-b border-[#E8E8E8] flex items-center justify-between">
-              <h3 className="text-base font-bold text-[#1A1A1A]">Nouvelle conversation</h3>
+          <div className="bg-card rounded-lg shadow-2xl w-full max-w-sm overflow-hidden border border-base">
+            <div className="px-5 py-4 border-b border-base flex items-center justify-between">
+              <h3 className="text-base font-bold text-primary">Nouvelle conversation</h3>
               <button
                 onClick={() => { setShowNewConv(false); setUserSearch('') }}
-                className="text-[#AAA] hover:text-[#555] text-xl leading-none"
+                className="text-faint hover:text-secondary text-xl leading-none"
               >
                 ×
               </button>
             </div>
             <div className="p-4">
               <div className="relative mb-3">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AAA]" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-faint" />
                 <input
                   autoFocus
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
                   placeholder="Rechercher un utilisateur…"
-                  className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-[#E0E0E0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800]"
+                  className="w-full pl-9 pr-3 py-2 text-sm bg-card border border-strong rounded-md focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800]"
                 />
               </div>
               <div className="max-h-64 overflow-y-auto space-y-1">
@@ -637,7 +637,7 @@ export function MessagesPage() {
                   >
                     <Avatar username={u.username} size="sm" />
                     <div>
-                      <p className="text-sm font-semibold text-[#1A1A1A]">{u.username}</p>
+                      <p className="text-sm font-semibold text-primary">{u.username}</p>
                       {u.isAdmin && (
                         <p className="text-[11px] text-[#F5A800] font-medium">Administrateur</p>
                       )}
@@ -645,7 +645,7 @@ export function MessagesPage() {
                   </button>
                 ))}
                 {filteredUsers.length === 0 && (
-                  <p className="text-sm text-[#AAA] text-center py-4">
+                  <p className="text-sm text-faint text-center py-4">
                     Aucun utilisateur trouvé
                   </p>
                 )}

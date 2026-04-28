@@ -36,20 +36,20 @@ function TreeNode({ folder, depth, activeFolderId }: TreeNodeProps) {
         className={cn(
           'flex items-center gap-2 w-full py-1.5 pr-3 text-sm transition-colors',
           isActive
-            ? 'bg-[#FFF8E7] text-[#1A1A1A] font-medium border-l-2 border-[#F5A800]'
-            : 'text-[#555] hover:bg-[#F5F5F5] border-l-2 border-transparent',
+            ? 'bg-[#FFF8E7] text-primary font-medium border-l-2 border-[#F5A800]'
+            : 'text-secondary hover:bg-muted border-l-2 border-transparent',
         )}
       >
         <span
           className={cn('transition-transform duration-150 shrink-0', expanded && 'rotate-90')}
           onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}
         >
-          <ChevronRight size={14} className="text-[#888]" />
+          <ChevronRight size={14} className="text-muted" />
         </span>
 
         {isActive || expanded
           ? <FolderOpen size={16} className="text-[#F5A800] shrink-0" />
-          : <Folder    size={16} className="text-[#888] shrink-0" />
+          : <Folder    size={16} className="text-muted shrink-0" />
         }
 
         <span className="truncate flex-1 text-left">{folder.name}</span>
@@ -83,9 +83,9 @@ export function FolderTree({ onCreateFolder }: FolderTreeProps) {
   })
 
   return (
-    <div className="w-56 shrink-0 bg-white border-r border-[#E8E8E8] h-full overflow-y-auto">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E8E8E8]">
-        <span className="text-xs font-bold text-[#555] uppercase tracking-widest">Dossiers</span>
+    <div className="w-56 shrink-0 bg-card border-r border-base h-full overflow-y-auto">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-base">
+        <span className="text-xs font-bold text-secondary uppercase tracking-widest">Dossiers</span>
         {onCreateFolder && (
           <button
             onClick={onCreateFolder}
@@ -97,7 +97,7 @@ export function FolderTree({ onCreateFolder }: FolderTreeProps) {
         )}
       </div>
       <div className="py-2 px-2">
-        {isLoading && <div className="px-3 py-2 text-xs text-[#888]">Chargement…</div>}
+        {isLoading && <div className="px-3 py-2 text-xs text-muted">Chargement…</div>}
         {data?.subfolders.map((folder) => (
           <TreeNode key={folder.id} folder={folder} depth={0} activeFolderId={activeFolderId} />
         ))}

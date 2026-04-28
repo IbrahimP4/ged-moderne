@@ -116,7 +116,7 @@ export function UploadModal({ open, onClose, folderId }: Props) {
             ${!file && dragging
               ? 'border-[#F5A800] bg-[#FFF8E7] scale-[1.01]'
               : !file
-                ? 'border-[#E0E0E0] hover:border-[#F5A800] hover:bg-[#FFFDF5]'
+                ? 'border-strong hover:border-[#F5A800] hover:bg-[#FFFDF5]'
                 : ''
             }
           `}
@@ -133,29 +133,29 @@ export function UploadModal({ open, onClose, folderId }: Props) {
 
           {file ? (
             /* File selected preview */
-            <div className="flex items-center gap-4 p-4 bg-[#FAFAFA] border border-[#E8E8E8] rounded-2xl">
+            <div className="flex items-center gap-4 p-4 bg-subtle border border-base rounded-2xl">
               {/* Icon */}
-              <div className="w-14 h-14 bg-white rounded-xl border border-[#E8E8E8] shadow-sm flex flex-col items-center justify-center gap-0.5 shrink-0">
+              <div className="w-14 h-14 bg-card rounded-xl border border-base shadow-sm flex flex-col items-center justify-center gap-0.5 shrink-0">
                 <FileTypeIcon mime={file.type || ''} size={22} />
-                <span className="text-[9px] font-bold text-[#AAA] leading-none">
+                <span className="text-[9px] font-bold text-faint leading-none">
                   {getExtension(file.name)}
                 </span>
               </div>
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[#1A1A1A] truncate">{file.name}</p>
-                <p className="text-xs text-[#888] mt-0.5">{formatBytes(file.size)}</p>
+                <p className="text-sm font-semibold text-primary truncate">{file.name}</p>
+                <p className="text-xs text-muted mt-0.5">{formatBytes(file.size)}</p>
                 {/* Mini progress if uploading */}
                 {isPending && (
                   <div className="mt-2 flex items-center gap-2">
-                    <div className="flex-1 bg-[#E8E8E8] rounded-full h-1.5 overflow-hidden">
+                    <div className="flex-1 bg-border rounded-full h-1.5 overflow-hidden">
                       <div
                         className="bg-[#F5A800] h-1.5 rounded-full transition-all duration-150"
                         style={{ width: `${progress}%` }}
                       />
                     </div>
-                    <span className="text-[10px] text-[#AAA] shrink-0">{progress}%</span>
+                    <span className="text-[10px] text-faint shrink-0">{progress}%</span>
                   </div>
                 )}
               </div>
@@ -165,7 +165,7 @@ export function UploadModal({ open, onClose, folderId }: Props) {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); setFile(null); setTitle(''); setProgress(0) }}
-                  className="p-1.5 rounded-lg text-[#AAA] hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
+                  className="p-1.5 rounded-lg text-faint hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
                   title="Retirer ce fichier"
                 >
                   <X size={15} />
@@ -175,20 +175,20 @@ export function UploadModal({ open, onClose, folderId }: Props) {
           ) : (
             /* Empty drop zone */
             <div className={`flex flex-col items-center justify-center py-10 px-6 transition-opacity ${dragging ? 'opacity-0' : 'opacity-100'}`}>
-              <div className="w-14 h-14 rounded-2xl bg-[#F5F5F5] flex items-center justify-center mb-3 group-hover:bg-[#FFF3CC] transition-colors">
-                <Upload size={24} className="text-[#AAA]" />
+              <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-3 group-hover:bg-[#FFF3CC] transition-colors">
+                <Upload size={24} className="text-faint" />
               </div>
-              <p className="text-sm font-semibold text-[#333]">
+              <p className="text-sm font-semibold text-primary">
                 Glissez un fichier ici
               </p>
-              <p className="text-xs text-[#AAA] mt-1">ou <span className="text-[#F5A800] font-medium">cliquez pour sélectionner</span></p>
+              <p className="text-xs text-faint mt-1">ou <span className="text-[#F5A800] font-medium">cliquez pour sélectionner</span></p>
               <div className="flex flex-wrap justify-center gap-1 mt-4">
                 {['PDF', 'Word', 'Excel', 'Images', 'ZIP'].map(t => (
-                  <span key={t} className="text-[10px] bg-[#F0F0F0] text-[#888] px-2 py-0.5 rounded-md font-medium">
+                  <span key={t} className="text-[10px] bg-border-muted text-muted px-2 py-0.5 rounded-md font-medium">
                     {t}
                   </span>
                 ))}
-                <span className="text-[10px] text-[#CCC] px-2 py-0.5">· max 128 MB</span>
+                <span className="text-[10px] text-ghost px-2 py-0.5">· max 128 MB</span>
               </div>
             </div>
           )}
@@ -212,7 +212,7 @@ export function UploadModal({ open, onClose, folderId }: Props) {
 
         {/* ── Title ── */}
         <div>
-          <label className="block text-xs font-bold text-[#555] uppercase tracking-wider mb-2">
+          <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
             Titre <span className="text-red-500">*</span>
           </label>
           <input
@@ -220,21 +220,21 @@ export function UploadModal({ open, onClose, folderId }: Props) {
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E8E8] text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] bg-white text-[#1A1A1A] placeholder-[#CCC] transition-shadow"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-base text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] bg-card text-primary placeholder-[#CCC] transition-shadow"
             placeholder="Titre du document"
           />
         </div>
 
         {/* ── Comment ── */}
         <div>
-          <label className="block text-xs font-bold text-[#555] uppercase tracking-wider mb-2">
-            Commentaire <span className="text-[#CCC] font-normal normal-case text-xs tracking-normal">(optionnel)</span>
+          <label className="block text-xs font-bold text-secondary uppercase tracking-wider mb-2">
+            Commentaire <span className="text-ghost font-normal normal-case text-xs tracking-normal">(optionnel)</span>
           </label>
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={2}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8E8E8] text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] bg-white text-[#1A1A1A] placeholder-[#CCC] resize-none transition-shadow"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-base text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] bg-card text-primary placeholder-[#CCC] resize-none transition-shadow"
             placeholder="Description ou note sur ce document…"
           />
         </div>

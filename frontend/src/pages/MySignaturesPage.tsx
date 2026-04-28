@@ -31,8 +31,8 @@ function ActionModal({
     <Modal open={open} onClose={onClose} title={type === 'sign' ? 'Signer le document' : 'Refuser la demande'}>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-[#333] mb-1.5">
-            Commentaire <span className="text-[#AAAAAA] font-normal">(optionnel)</span>
+          <label className="block text-sm font-medium text-primary mb-1.5">
+            Commentaire <span className="text-faint font-normal">(optionnel)</span>
           </label>
           <textarea
             autoFocus
@@ -40,7 +40,7 @@ function ActionModal({
             onChange={(e) => setComment(e.target.value)}
             rows={3}
             placeholder={type === 'sign' ? 'Note de signature…' : 'Raison du refus…'}
-            className="w-full px-3.5 py-2.5 rounded-md border border-[#E0E0E0] text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800] resize-none"
+            className="w-full px-3.5 py-2.5 rounded-md border border-strong text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800] resize-none"
           />
         </div>
         <div className="flex justify-end gap-2">
@@ -70,7 +70,7 @@ function IncomingCard({
 }) {
   const cfg = STATUS_CONFIG[req.status]
   return (
-    <div className="bg-white rounded-lg border border-[#E8E8E8] p-4 hover:border-[#F5A800] hover:shadow-sm transition-all">
+    <div className="bg-card rounded-lg border border-base p-4 hover:border-[#F5A800] hover:shadow-sm transition-all">
       <div className="flex items-start gap-3">
         <div className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${
           req.status === 'pending' ? 'bg-[#FFF8E7]' : req.status === 'signed' ? 'bg-[#E6F9EF]' : 'bg-[#FEE9E9]'
@@ -83,25 +83,25 @@ function IncomingCard({
           <div className="flex items-center justify-between gap-2">
             <Link
               to={`/documents/${req.documentId}`}
-              className="font-semibold text-[#1A1A1A] hover:text-[#F5A800] transition-colors text-sm flex items-center gap-1 truncate"
+              className="font-semibold text-primary hover:text-[#F5A800] transition-colors text-sm flex items-center gap-1 truncate"
             >
               {req.documentTitle}
-              <ChevronRight size={13} className="text-[#AAA] shrink-0" />
+              <ChevronRight size={13} className="text-faint shrink-0" />
             </Link>
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium shrink-0 ${cfg.badge}`}>
               {cfg.icon}{cfg.label}
             </span>
           </div>
-          <p className="text-xs text-[#888] mt-0.5">
-            Demandé par <span className="font-medium text-[#555]">{req.requesterUsername}</span>
+          <p className="text-xs text-muted mt-0.5">
+            Demandé par <span className="font-medium text-secondary">{req.requesterUsername}</span>
             {' · '}
             {new Date(req.requestedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </p>
 
           {req.message && (
-            <div className="mt-2 flex items-start gap-1.5 bg-[#F4F4F4] rounded-md px-2.5 py-1.5">
-              <MessageSquare size={13} className="text-[#AAA] shrink-0 mt-0.5" />
-              <p className="text-xs text-[#555] italic">"{req.message}"</p>
+            <div className="mt-2 flex items-start gap-1.5 bg-page rounded-md px-2.5 py-1.5">
+              <MessageSquare size={13} className="text-faint shrink-0 mt-0.5" />
+              <p className="text-xs text-secondary italic">"{req.message}"</p>
             </div>
           )}
 
@@ -117,7 +117,7 @@ function IncomingCard({
           )}
 
           {req.resolvedAt && (
-            <p className="text-xs text-[#AAAAAA] mt-1.5">
+            <p className="text-xs text-faint mt-1.5">
               Traité le {new Date(req.resolvedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </p>
           )}
@@ -126,10 +126,10 @@ function IncomingCard({
 
       {/* Boutons d'action — uniquement pour les demandes en attente */}
       {req.status === 'pending' && (
-        <div className="flex gap-2 mt-4 pt-4 border-t border-[#F0F0F0]">
+        <div className="flex gap-2 mt-4 pt-4 border-t border-muted">
           <button
             onClick={onSign}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-[#F5A800] text-[#1A1A1A] text-xs font-bold hover:bg-[#e09900] transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-[#F5A800] text-primary text-xs font-bold hover:bg-[#e09900] transition-colors"
           >
             <CheckCircle2 size={14} /> Signer
           </button>
@@ -149,7 +149,7 @@ function IncomingCard({
 function OutgoingCard({ req }: { req: SignatureRequestDTO }) {
   const cfg = STATUS_CONFIG[req.status]
   return (
-    <div className="bg-white rounded-lg border border-[#E8E8E8] p-4 hover:border-[#F5A800] transition-colors">
+    <div className="bg-card rounded-lg border border-base p-4 hover:border-[#F5A800] transition-colors">
       <div className="flex items-start gap-3">
         <div className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${
           req.status === 'pending' ? 'bg-[#FFF8E7]' : req.status === 'signed' ? 'bg-[#E6F9EF]' : 'bg-[#FEE9E9]'
@@ -162,24 +162,24 @@ function OutgoingCard({ req }: { req: SignatureRequestDTO }) {
           <div className="flex items-center justify-between gap-2">
             <Link
               to={`/documents/${req.documentId}`}
-              className="font-semibold text-[#1A1A1A] hover:text-[#F5A800] transition-colors text-sm flex items-center gap-1 truncate"
+              className="font-semibold text-primary hover:text-[#F5A800] transition-colors text-sm flex items-center gap-1 truncate"
             >
               {req.documentTitle}
-              <ChevronRight size={13} className="text-[#AAA] shrink-0" />
+              <ChevronRight size={13} className="text-faint shrink-0" />
             </Link>
             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium shrink-0 ${cfg.badge}`}>
               {cfg.icon}{cfg.label}
             </span>
           </div>
-          <p className="text-xs text-[#888] mt-0.5">
-            Signataire : <span className="font-medium text-[#555]">{req.signerUsername}</span>
+          <p className="text-xs text-muted mt-0.5">
+            Signataire : <span className="font-medium text-secondary">{req.signerUsername}</span>
             {' · '}
             {new Date(req.requestedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </p>
           {req.message && (
-            <div className="mt-2 flex items-start gap-1.5 bg-[#F4F4F4] rounded-md px-2.5 py-1.5">
-              <MessageSquare size={13} className="text-[#AAA] shrink-0 mt-0.5" />
-              <p className="text-xs text-[#555] italic">"{req.message}"</p>
+            <div className="mt-2 flex items-start gap-1.5 bg-page rounded-md px-2.5 py-1.5">
+              <MessageSquare size={13} className="text-faint shrink-0 mt-0.5" />
+              <p className="text-xs text-secondary italic">"{req.message}"</p>
             </div>
           )}
           {req.comment && (
@@ -193,7 +193,7 @@ function OutgoingCard({ req }: { req: SignatureRequestDTO }) {
             </div>
           )}
           {req.resolvedAt && (
-            <p className="text-xs text-[#AAAAAA] mt-1.5">
+            <p className="text-xs text-faint mt-1.5">
               Traité le {new Date(req.resolvedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
             </p>
           )}
@@ -255,14 +255,14 @@ export function MySignaturesPage() {
   const totalPending = incomingPending.length
 
   return (
-    <div className="min-h-full bg-[#F4F4F4]">
+    <div className="min-h-full bg-page">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         {/* Header card */}
-        <div className="bg-white rounded-lg border border-[#E8E8E8] overflow-hidden mb-6">
+        <div className="bg-card rounded-lg border border-base overflow-hidden mb-6">
           <div className="bg-[#1A1A1A] px-6 py-5 flex items-center gap-4">
             <div className="w-10 h-10 bg-[#F5A800] rounded-md flex items-center justify-center shrink-0">
-              <FileSignature size={22} className="text-[#1A1A1A]" />
+              <FileSignature size={22} className="text-primary" />
             </div>
             <div className="flex-1">
               <h1 className="text-xl font-bold text-white">Mes signatures</h1>
@@ -277,23 +277,23 @@ export function MySignaturesPage() {
 
           {/* Stats strip */}
           {all.length > 0 && (
-            <div className="px-6 py-3 flex items-center gap-6 border-t border-[#E8E8E8] flex-wrap">
+            <div className="px-6 py-3 flex items-center gap-6 border-t border-base flex-wrap">
               <div className="flex items-center gap-2">
                 <ArrowDownToLine size={13} className="text-[#F5A800]" />
-                <span className="text-xs text-[#888]">
-                  <span className="font-bold text-[#1A1A1A]">{incoming.length}</span> reçue{incoming.length !== 1 ? 's' : ''}
+                <span className="text-xs text-muted">
+                  <span className="font-bold text-primary">{incoming.length}</span> reçue{incoming.length !== 1 ? 's' : ''}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <ArrowUpFromLine size={13} className="text-[#888]" />
-                <span className="text-xs text-[#888]">
-                  <span className="font-bold text-[#1A1A1A]">{outgoing.length}</span> envoyée{outgoing.length !== 1 ? 's' : ''}
+                <ArrowUpFromLine size={13} className="text-muted" />
+                <span className="text-xs text-muted">
+                  <span className="font-bold text-primary">{outgoing.length}</span> envoyée{outgoing.length !== 1 ? 's' : ''}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={13} className="text-[#34C472]" />
-                <span className="text-xs text-[#888]">
-                  <span className="font-bold text-[#1A1A1A]">{all.filter(r => r.status === 'signed').length}</span> signée{all.filter(r => r.status === 'signed').length !== 1 ? 's' : ''}
+                <span className="text-xs text-muted">
+                  <span className="font-bold text-primary">{all.filter(r => r.status === 'signed').length}</span> signée{all.filter(r => r.status === 'signed').length !== 1 ? 's' : ''}
                 </span>
               </div>
             </div>
@@ -301,12 +301,12 @@ export function MySignaturesPage() {
         </div>
 
         {all.length === 0 ? (
-          <div className="bg-white rounded-lg border border-[#E8E8E8] text-center py-20">
-            <div className="w-14 h-14 bg-[#F4F4F4] rounded-lg flex items-center justify-center mx-auto mb-4">
-              <FileSignature size={28} className="text-[#CCC]" />
+          <div className="bg-card rounded-lg border border-base text-center py-20">
+            <div className="w-14 h-14 bg-page rounded-lg flex items-center justify-center mx-auto mb-4">
+              <FileSignature size={28} className="text-ghost" />
             </div>
-            <p className="text-[#555] font-medium">Aucune demande de signature</p>
-            <p className="text-[#AAA] text-sm mt-1">
+            <p className="text-secondary font-medium">Aucune demande de signature</p>
+            <p className="text-faint text-sm mt-1">
               Ouvrez un document et cliquez sur "Demander une signature"
             </p>
           </div>
@@ -318,7 +318,7 @@ export function MySignaturesPage() {
               <section>
                 <div className="flex items-center gap-2 mb-3">
                   <ArrowDownToLine size={14} className="text-[#F5A800]" />
-                  <h2 className="text-xs font-bold text-[#555] uppercase tracking-widest">
+                  <h2 className="text-xs font-bold text-secondary uppercase tracking-widest">
                     Demandes reçues — à traiter ({incoming.length})
                   </h2>
                 </div>
@@ -340,8 +340,8 @@ export function MySignaturesPage() {
                   <>
                     {incomingPending.length > 0 && (
                       <div className="flex items-center gap-2 mb-2 mt-4">
-                        <div className="w-1 h-4 bg-[#E8E8E8] rounded-full" />
-                        <p className="text-xs text-[#AAA] uppercase tracking-wider font-medium">Historique</p>
+                        <div className="w-1 h-4 bg-border rounded-full" />
+                        <p className="text-xs text-faint uppercase tracking-wider font-medium">Historique</p>
                       </div>
                     )}
                     <div className="space-y-2">
@@ -363,8 +363,8 @@ export function MySignaturesPage() {
             {outgoing.length > 0 && (
               <section>
                 <div className="flex items-center gap-2 mb-3">
-                  <ArrowUpFromLine size={14} className="text-[#888]" />
-                  <h2 className="text-xs font-bold text-[#555] uppercase tracking-widest">
+                  <ArrowUpFromLine size={14} className="text-muted" />
+                  <h2 className="text-xs font-bold text-secondary uppercase tracking-widest">
                     Demandes envoyées ({outgoing.length})
                   </h2>
                 </div>

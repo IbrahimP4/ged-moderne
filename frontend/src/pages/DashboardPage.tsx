@@ -18,8 +18,8 @@ function SectionTitle({ icon, label }: { icon: React.ReactNode; label: string })
   return (
     <div className="flex items-center gap-2 mb-4">
       <div className="w-1 h-5 bg-[#F5A800] rounded-full" />
-      <span className="text-[#888] shrink-0">{icon}</span>
-      <h2 className="text-xs font-bold text-[#555] uppercase tracking-widest">{label}</h2>
+      <span className="text-muted shrink-0">{icon}</span>
+      <h2 className="text-xs font-bold text-secondary uppercase tracking-widest">{label}</h2>
     </div>
   )
 }
@@ -28,15 +28,15 @@ function StatCard({ label, value, icon, accent, to }: {
   label: string; value: number; icon: React.ReactNode; accent: string; to?: string
 }) {
   const inner = (
-    <div className={`bg-white border border-[#E8E8E8] rounded-lg p-5 flex items-center gap-4 hover:shadow-md transition-all group ${to ? 'cursor-pointer' : ''}`}>
+    <div className={`bg-card border border-base rounded-lg p-5 flex items-center gap-4 hover:shadow-md transition-all group ${to ? 'cursor-pointer' : ''}`}>
       <div className={`w-12 h-12 rounded-md flex items-center justify-center shrink-0 ${accent}`}>
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-2xl font-black text-[#1A1A1A] tracking-tight">{value.toLocaleString()}</p>
-        <p className="text-xs text-[#888] font-medium uppercase tracking-wide mt-0.5">{label}</p>
+        <p className="text-2xl font-black text-primary tracking-tight">{value.toLocaleString()}</p>
+        <p className="text-xs text-muted font-medium uppercase tracking-wide mt-0.5">{label}</p>
       </div>
-      {to && <ChevronRight size={16} className="text-[#CCC] group-hover:text-[#F5A800] transition-colors" />}
+      {to && <ChevronRight size={16} className="text-ghost group-hover:text-[#F5A800] transition-colors" />}
     </div>
   )
   return to ? <Link to={to}>{inner}</Link> : inner
@@ -111,8 +111,8 @@ export function DashboardPage() {
           <StatCard
             label="Dossiers"
             value={stats.totalFolders}
-            icon={<FolderOpen size={22} className="text-[#1A1A1A]" />}
-            accent="bg-[#E8E8E8]"
+            icon={<FolderOpen size={22} className="text-primary" />}
+            accent="bg-border"
             to="/folders"
           />
           {isAdmin && (
@@ -135,7 +135,7 @@ export function DashboardPage() {
             { key: 'approved',       bg: 'bg-green-50',  border: 'border-green-100', text: 'text-green-700',  dot: 'bg-green-500', icon: <CheckCircle2 size={16} className="text-green-600" /> },
             { key: 'pending_review', bg: 'bg-[#FFF8E7]', border: 'border-[#F5D580]', text: 'text-[#A07000]',  dot: 'bg-[#F5A800]', icon: <Clock size={16} className="text-[#F5A800]" /> },
             { key: 'rejected',       bg: 'bg-red-50',    border: 'border-red-100',   text: 'text-red-700',    dot: 'bg-red-500',   icon: <XCircle size={16} className="text-red-600" /> },
-            { key: 'draft',          bg: 'bg-[#F5F5F5]', border: 'border-[#E0E0E0]', text: 'text-[#555]',     dot: 'bg-[#CCC]',    icon: <FileText size={16} className="text-[#888]" /> },
+            { key: 'draft',          bg: 'bg-muted', border: 'border-strong', text: 'text-secondary',     dot: 'bg-[#CCC]',    icon: <FileText size={16} className="text-muted" /> },
           ].map(({ key, bg, border, text, icon }) => (
             <div key={key} className={`rounded-lg p-4 border ${bg} ${border}`}>
               <div className="flex items-center gap-2 mb-2">
@@ -171,7 +171,7 @@ export function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
         {/* Area chart */}
-        <div className="lg:col-span-2 bg-white border border-[#E8E8E8] rounded-lg p-6">
+        <div className="lg:col-span-2 bg-card border border-base rounded-lg p-6">
           <SectionTitle icon={<TrendingUp size={14} />} label="Uploads — 30 derniers jours" />
           {uploadsByDay.length > 0 ? (
             <ResponsiveContainer width="100%" height={190}>
@@ -194,14 +194,14 @@ export function DashboardPage() {
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-[190px] text-[#CCC] text-sm">
+            <div className="flex items-center justify-center h-[190px] text-ghost text-sm">
               Aucune donnée disponible
             </div>
           )}
         </div>
 
         {/* Pie chart */}
-        <div className="bg-white border border-[#E8E8E8] rounded-lg p-6">
+        <div className="bg-card border border-base rounded-lg p-6">
           <SectionTitle icon={<BarChart3 size={14} />} label="Statuts" />
           {stats.totalDocuments > 0 ? (
             <ResponsiveContainer width="100%" height={190}>
@@ -223,7 +223,7 @@ export function DashboardPage() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-[190px] text-[#CCC] text-sm">
+            <div className="flex items-center justify-center h-[190px] text-ghost text-sm">
               Aucun document
             </div>
           )}
@@ -231,21 +231,21 @@ export function DashboardPage() {
       </div>
 
       {/* ── Actions rapides ─────────────────────────────────────────────── */}
-      <div className="bg-white border border-[#E8E8E8] rounded-lg p-6">
+      <div className="bg-card border border-base rounded-lg p-6">
         <SectionTitle icon={<TrendingUp size={14} />} label="Actions rapides" />
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {[
             { to: '/folders', icon: <FolderOpen size={18} className="text-[#F5A800]" />, label: 'Parcourir les dossiers' },
-            { to: '/search',  icon: <FileText size={18} className="text-[#1A1A1A]" />,   label: 'Rechercher un document' },
-            ...(isAdmin ? [{ to: '/admin/audit', icon: <Clock size={18} className="text-[#888]" />, label: "Journal d'audit" }] : []),
+            { to: '/search',  icon: <FileText size={18} className="text-primary" />,   label: 'Rechercher un document' },
+            ...(isAdmin ? [{ to: '/admin/audit', icon: <Clock size={18} className="text-muted" />, label: "Journal d'audit" }] : []),
           ].map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className="flex items-center gap-3 p-3 rounded-md border border-[#E8E8E8] hover:border-[#F5A800] hover:bg-[#FFF8E7] transition-all group"
+              className="flex items-center gap-3 p-3 rounded-md border border-base hover:border-[#F5A800] hover:bg-[#FFF8E7] transition-all group"
             >
               {item.icon}
-              <span className="text-sm font-medium text-[#444] group-hover:text-[#1A1A1A]">{item.label}</span>
+              <span className="text-sm font-medium text-secondary group-hover:text-primary">{item.label}</span>
             </Link>
           ))}
         </div>

@@ -29,14 +29,14 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-1.5 rounded-lg text-[#555] hover:bg-[#F5F5F5] border border-[#E0E0E0] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="p-1.5 rounded-lg text-secondary hover:bg-muted border border-strong disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         <ChevronLeft size={16} />
       </button>
 
       {pages.map((page, i) =>
         page === '...' ? (
-          <span key={`dots-${i}`} className="px-2 py-1 text-[#888] text-sm">…</span>
+          <span key={`dots-${i}`} className="px-2 py-1 text-muted text-sm">…</span>
         ) : (
           <button
             key={page}
@@ -45,7 +45,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
               'min-w-[32px] h-8 px-2 rounded-lg text-sm font-medium transition-colors border',
               page === currentPage
                 ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-                : 'text-[#555] hover:bg-[#F5F5F5] border-[#E0E0E0]',
+                : 'text-secondary hover:bg-muted border-strong',
             )}
           >
             {page}
@@ -56,7 +56,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-1.5 rounded-lg text-[#555] hover:bg-[#F5F5F5] border border-[#E0E0E0] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="p-1.5 rounded-lg text-secondary hover:bg-muted border border-strong disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         <ChevronRight size={16} />
       </button>

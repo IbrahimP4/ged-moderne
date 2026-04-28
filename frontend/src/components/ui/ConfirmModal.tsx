@@ -34,7 +34,7 @@ export function ConfirmModal({
           </div>
           <p className="text-sm text-[#444444] leading-relaxed pt-1.5">{message}</p>
         </div>
-        <div className="flex justify-end gap-2 pt-1 border-t border-[#F0F0F0]">
+        <div className="flex justify-end gap-2 pt-1 border-t border-muted">
           <Button variant="secondary" onClick={onClose} disabled={loading}>Annuler</Button>
           <Button variant={variant} onClick={onConfirm} loading={loading}>{confirmLabel}</Button>
         </div>

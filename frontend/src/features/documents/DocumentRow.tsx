@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FileText, FileImage, FileVideo, File, Trash2, Download, Eye } from 'lucide-react'
+import { FileText, FileImage, FileVideo, File, Trash2, Download, Eye, ExternalLink } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { deleteDocument, downloadUrl } from '@/api/documents'
@@ -16,7 +16,7 @@ function FileIcon({ mimeType }: { mimeType: string }) {
   if (mimeType.startsWith('image/')) return <FileImage size={18} className="text-violet-500" />
   if (mimeType.startsWith('video/')) return <FileVideo size={18} className="text-pink-500" />
   if (mimeType === 'application/pdf') return <FileText size={18} className="text-red-500" />
-  return <File size={18} className="text-[#888]" />
+  return <File size={18} className="text-muted" />
 }
 
 interface Props {
@@ -71,7 +71,7 @@ export function DocumentRow({ doc, folderId, selected = false, onToggle, bulkMod
               type="checkbox"
               checked={selected}
               onChange={() => onToggle?.(doc.id)}
-              className="w-4 h-4 rounded border-[#D0D0D0] accent-[#F5A800] cursor-pointer"
+              className="w-4 h-4 rounded border-strong accent-[#F5A800] cursor-pointer"
             />
           </td>
         )}
@@ -80,19 +80,19 @@ export function DocumentRow({ doc, folderId, selected = false, onToggle, bulkMod
           <div className="flex items-center gap-3">
             <div className={cn(
               'w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-colors',
-              selected ? 'bg-[#FFF3CC]' : 'bg-[#F5F5F5] group-hover:bg-white',
+              selected ? 'bg-[#FFF3CC]' : 'bg-muted group-hover:bg-card',
             )}>
               <FileIcon mimeType={doc.mimeType} />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-[#1A1A1A] truncate">{doc.title}</p>
+              <p className="text-sm font-medium text-primary truncate">{doc.title}</p>
               <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
-                <p className="text-xs text-[#888] truncate">{doc.originalFilename}</p>
+                <p className="text-xs text-muted truncate">{doc.originalFilename}</p>
                 {doc.tags.slice(0, 2).map((tag) => (
                   <TagBadge key={tag} tag={tag} className="text-[10px] py-0 px-1.5" />
                 ))}
                 {doc.tags.length > 2 && (
-                  <span className="text-[10px] text-[#888]">+{doc.tags.length - 2}</span>
+                  <span className="text-[10px] text-muted">+{doc.tags.length - 2}</span>
                 )}
               </div>
             </div>
@@ -103,10 +103,10 @@ export function DocumentRow({ doc, folderId, selected = false, onToggle, bulkMod
             {STATUS_LABELS[doc.status]}
           </Badge>
         </td>
-        <td className="px-4 py-3 text-xs text-[#888] hidden md:table-cell">
+        <td className="px-4 py-3 text-xs text-muted hidden md:table-cell">
           {formatBytes(doc.fileSizeBytes)}
         </td>
-        <td className="px-4 py-3 text-xs text-[#888] hidden lg:table-cell">
+        <td className="px-4 py-3 text-xs text-muted hidden lg:table-cell">
           {formatDate(doc.updatedAt)}
         </td>
         <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
@@ -114,7 +114,7 @@ export function DocumentRow({ doc, folderId, selected = false, onToggle, bulkMod
             <button
               type="button"
               onClick={() => downloadAuthenticatedFile(downloadUrl(doc.id), doc.originalFilename)}
-              className="p-1.5 rounded-md text-[#888] hover:text-[#F5A800] hover:bg-[#FFF3CC] transition-colors"
+              className="p-1.5 rounded-md text-muted hover:text-[#F5A800] hover:bg-[#FFF3CC] transition-colors"
               title="Télécharger"
             >
               <Download size={15} />
@@ -124,7 +124,7 @@ export function DocumentRow({ doc, folderId, selected = false, onToggle, bulkMod
               <button
                 type="button"
                 onClick={onPreview}
-                className="p-1.5 rounded-md text-[#888] hover:text-[#6366F1] hover:bg-indigo-50 transition-colors"
+                className="p-1.5 rounded-md text-muted hover:text-[#6366F1] hover:bg-indigo-50 transition-colors"
                 title="Aperçu rapide"
               >
                 <Eye size={15} />
@@ -133,15 +133,15 @@ export function DocumentRow({ doc, folderId, selected = false, onToggle, bulkMod
             <button
               type="button"
               onClick={() => navigate(`/documents/${doc.id}`)}
-              className="p-1.5 rounded-md text-[#888] hover:text-[#F5A800] hover:bg-[#FFF3CC] transition-colors"
+              className="p-1.5 rounded-md text-muted hover:text-[#F5A800] hover:bg-[#FFF3CC] transition-colors"
               title="Ouvrir la page du document"
             >
-              <Eye size={15} />
+              <ExternalLink size={15} />
             </button>
             <button
               type="button"
               onClick={() => setConfirmDelete(true)}
-              className="p-1.5 rounded-md text-[#888] hover:text-red-600 hover:bg-red-50 transition-colors"
+              className="p-1.5 rounded-md text-muted hover:text-red-600 hover:bg-red-50 transition-colors"
               title="Supprimer"
             >
               <Trash2 size={15} />

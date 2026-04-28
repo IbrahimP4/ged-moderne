@@ -60,22 +60,22 @@ function SignatureManager({ title, subtitle, value, onSave, onDelete, loading, d
   }
 
   return (
-    <div className="bg-white rounded-lg border border-[#E8E8E8] overflow-hidden">
-      <div className="px-6 py-5 border-b border-[#E8E8E8]">
+    <div className="bg-card rounded-lg border border-base overflow-hidden">
+      <div className="px-6 py-5 border-b border-base">
         <div className="flex items-center gap-2 mb-1">
           <div className="w-1 h-5 bg-[#F5A800] rounded-full" />
-          <h2 className="text-xs font-bold text-[#555] uppercase tracking-widest">{title}</h2>
+          <h2 className="text-xs font-bold text-secondary uppercase tracking-widest">{title}</h2>
         </div>
-        <p className="text-sm text-[#888] mt-1 pl-3">{subtitle}</p>
+        <p className="text-sm text-muted mt-1 pl-3">{subtitle}</p>
       </div>
 
       <div className="p-6">
         {/* Aperçu signature actuelle */}
         {!editing && value && (
           <div className="mb-5">
-            <p className="text-xs font-bold text-[#AAA] uppercase tracking-widest mb-3">Signature actuelle</p>
+            <p className="text-xs font-bold text-faint uppercase tracking-widest mb-3">Signature actuelle</p>
             <div className="relative inline-block group">
-              <div className="border-2 border-dashed border-[#E8E8E8] rounded-lg p-4 bg-[#F4F4F4] min-w-[260px] hover:border-[#F5A800] transition-colors">
+              <div className="border-2 border-dashed border-base rounded-lg p-4 bg-page min-w-[260px] hover:border-[#F5A800] transition-colors">
                 <img
                   src={value.dataUrl}
                   alt="Signature"
@@ -83,7 +83,7 @@ function SignatureManager({ title, subtitle, value, onSave, onDelete, loading, d
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))' }}
                 />
               </div>
-              <p className="text-xs text-[#AAA] mt-2">
+              <p className="text-xs text-faint mt-2">
                 Mise à jour le {new Date(value.updatedAt).toLocaleDateString('fr-FR', {
                   day: 'numeric', month: 'long', year: 'numeric',
                 })}
@@ -104,11 +104,11 @@ function SignatureManager({ title, subtitle, value, onSave, onDelete, loading, d
         {!editing && !value && (
           <div
             onClick={() => setEditing(true)}
-            className="border-2 border-dashed border-[#E8E8E8] rounded-lg p-10 text-center cursor-pointer hover:border-[#F5A800] hover:bg-[#FFF8E7] transition-all mb-4 group"
+            className="border-2 border-dashed border-base rounded-lg p-10 text-center cursor-pointer hover:border-[#F5A800] hover:bg-[#FFF8E7] transition-all mb-4 group"
           >
-            <PenLine size={32} className="text-[#CCC] group-hover:text-[#F5A800] mx-auto mb-3 transition-colors" />
-            <p className="text-sm font-medium text-[#888] group-hover:text-[#1A1A1A]">Créer ma signature</p>
-            <p className="text-xs text-[#AAA] mt-1">Dessiner ou importer une image</p>
+            <PenLine size={32} className="text-ghost group-hover:text-[#F5A800] mx-auto mb-3 transition-colors" />
+            <p className="text-sm font-medium text-muted group-hover:text-primary">Créer ma signature</p>
+            <p className="text-xs text-faint mt-1">Dessiner ou importer une image</p>
           </div>
         )}
 
@@ -116,13 +116,13 @@ function SignatureManager({ title, subtitle, value, onSave, onDelete, loading, d
         {editing && (
           <div>
             {/* Tabs draw / upload */}
-            <div className="flex gap-1 mb-5 bg-[#F4F4F4] p-1 rounded-md w-fit">
+            <div className="flex gap-1 mb-5 bg-page p-1 rounded-md w-fit">
               <button
                 onClick={() => setMode('draw')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   mode === 'draw'
-                    ? 'bg-white shadow-sm text-[#1A1A1A] border border-[#E8E8E8]'
-                    : 'text-[#888] hover:text-[#555]'
+                    ? 'bg-card shadow-sm text-primary border border-base'
+                    : 'text-muted hover:text-secondary'
                 }`}
               >
                 <PenLine size={15} />Dessiner
@@ -131,8 +131,8 @@ function SignatureManager({ title, subtitle, value, onSave, onDelete, loading, d
                 onClick={() => setMode('upload')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
                   mode === 'upload'
-                    ? 'bg-white shadow-sm text-[#1A1A1A] border border-[#E8E8E8]'
-                    : 'text-[#888] hover:text-[#555]'
+                    ? 'bg-card shadow-sm text-primary border border-base'
+                    : 'text-muted hover:text-secondary'
                 }`}
               >
                 <Upload size={15} />Importer
@@ -141,11 +141,11 @@ function SignatureManager({ title, subtitle, value, onSave, onDelete, loading, d
 
             {mode === 'draw' && (
               <div>
-                <div className="border-2 border-[#E8E8E8] rounded-lg overflow-hidden bg-white relative">
+                <div className="border-2 border-base rounded-lg overflow-hidden bg-card relative">
                   {/* Guide lines */}
                   <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute bottom-10 left-6 right-6 h-px bg-[#E8E8E8]" />
-                    <p className="absolute bottom-2 left-6 text-[10px] text-[#CCC]">Signez ici</p>
+                    <div className="absolute bottom-10 left-6 right-6 h-px bg-border" />
+                    <p className="absolute bottom-2 left-6 text-[10px] text-ghost">Signez ici</p>
                   </div>
                   <SignatureCanvas ref={canvasRef} width={460} height={180} className="w-full" />
                 </div>
@@ -177,11 +177,11 @@ function SignatureManager({ title, subtitle, value, onSave, onDelete, loading, d
                 ) : (
                   <button
                     onClick={() => fileRef.current?.click()}
-                    className="w-full border-2 border-dashed border-[#E8E8E8] rounded-lg p-10 text-center hover:border-[#F5A800] hover:bg-[#FFF8E7] transition-all"
+                    className="w-full border-2 border-dashed border-base rounded-lg p-10 text-center hover:border-[#F5A800] hover:bg-[#FFF8E7] transition-all"
                   >
-                    <Upload size={28} className="text-[#CCC] mx-auto mb-2" />
-                    <p className="text-sm font-medium text-[#888]">Cliquez pour importer</p>
-                    <p className="text-xs text-[#AAA] mt-1">PNG, JPG, SVG — fond transparent recommandé</p>
+                    <Upload size={28} className="text-ghost mx-auto mb-2" />
+                    <p className="text-sm font-medium text-muted">Cliquez pour importer</p>
+                    <p className="text-xs text-faint mt-1">PNG, JPG, SVG — fond transparent recommandé</p>
                   </button>
                 )}
                 <div className="flex items-center gap-2 mt-3">
@@ -259,25 +259,25 @@ export function ProfilePage() {
   })
 
   return (
-    <div className="min-h-full bg-[#F4F4F4]">
+    <div className="min-h-full bg-page">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         {/* Profile card header */}
-        <div className="bg-white rounded-lg border border-[#E8E8E8] overflow-hidden mb-6">
+        <div className="bg-card rounded-lg border border-base overflow-hidden mb-6">
           {/* Dark top stripe with yellow accent */}
           <div className="bg-[#1A1A1A] px-6 py-5 flex items-center gap-4">
-            <div className="w-14 h-14 rounded-lg bg-[#F5A800] flex items-center justify-center text-[#1A1A1A] text-2xl font-bold shrink-0">
+            <div className="w-14 h-14 rounded-lg bg-[#F5A800] flex items-center justify-center text-primary text-2xl font-bold shrink-0">
               {username?.[0]?.toUpperCase() ?? '?'}
             </div>
             <div className="flex-1 min-w-0">
               <h1 className="text-xl font-bold text-white truncate">{username}</h1>
               <div className="flex items-center gap-2 mt-1">
                 {isAdmin ? (
-                  <span className="inline-flex items-center gap-1.5 text-xs bg-[#F5A800] text-[#1A1A1A] px-2.5 py-1 rounded-md font-bold uppercase tracking-wide">
+                  <span className="inline-flex items-center gap-1.5 text-xs bg-[#F5A800] text-primary px-2.5 py-1 rounded-md font-bold uppercase tracking-wide">
                     <Building2 size={12} />Administrateur
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 text-xs bg-white/10 text-white px-2.5 py-1 rounded-md font-medium">
+                  <span className="inline-flex items-center gap-1.5 text-xs bg-card/10 text-white px-2.5 py-1 rounded-md font-medium">
                     <User size={12} />Utilisateur
                   </span>
                 )}
@@ -289,12 +289,12 @@ export function ProfilePage() {
           {/* Profile fields */}
           <div className="px-6 py-4 grid grid-cols-2 gap-x-8 gap-y-4">
             <div>
-              <p className="text-xs font-bold text-[#AAA] uppercase tracking-widest mb-0.5">Nom d'utilisateur</p>
-              <p className="text-sm text-[#1A1A1A] font-medium">{username}</p>
+              <p className="text-xs font-bold text-faint uppercase tracking-widest mb-0.5">Nom d'utilisateur</p>
+              <p className="text-sm text-primary font-medium">{username}</p>
             </div>
             <div>
-              <p className="text-xs font-bold text-[#AAA] uppercase tracking-widest mb-0.5">Rôle</p>
-              <p className="text-sm text-[#1A1A1A] font-medium">{isAdmin ? 'Administrateur' : 'Utilisateur'}</p>
+              <p className="text-xs font-bold text-faint uppercase tracking-widest mb-0.5">Rôle</p>
+              <p className="text-sm text-primary font-medium">{isAdmin ? 'Administrateur' : 'Utilisateur'}</p>
             </div>
           </div>
         </div>
@@ -327,13 +327,13 @@ export function ProfilePage() {
           )}
 
           {/* Info sécurité */}
-          <div className="bg-white border border-[#E8E8E8] rounded-lg p-5 flex items-start gap-3">
+          <div className="bg-card border border-base rounded-lg p-5 flex items-start gap-3">
             <div className="w-8 h-8 bg-[#F5A800] rounded-md flex items-center justify-center shrink-0 mt-0.5">
-              <CheckCircle2 size={16} className="text-[#1A1A1A]" />
+              <CheckCircle2 size={16} className="text-primary" />
             </div>
             <div>
-              <p className="text-sm font-bold text-[#1A1A1A]">Signature sécurisée</p>
-              <p className="text-xs text-[#888] mt-1 leading-relaxed">
+              <p className="text-sm font-bold text-primary">Signature sécurisée</p>
+              <p className="text-xs text-muted mt-1 leading-relaxed">
                 Votre signature est stockée de façon sécurisée et n'est utilisée que lors de vos actions explicites de signature. Elle est intégrée directement dans le PDF signé.
               </p>
             </div>

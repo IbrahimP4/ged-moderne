@@ -72,7 +72,7 @@ export function PermissionsModal({ folderId, folderName, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh]">
+      <div className="bg-card rounded-2xl shadow-2xl w-full max-w-lg flex flex-col max-h-[90vh]">
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
@@ -120,7 +120,7 @@ export function PermissionsModal({ folderId, folderName, onClose }: Props) {
                   perms?.restricted ? 'bg-red-500' : 'bg-green-400'
                 }`}
               >
-                <span className={`inline-block h-4 w-4 rounded-full bg-white shadow transition-transform ${
+                <span className={`inline-block h-4 w-4 rounded-full bg-card shadow transition-transform ${
                   perms?.restricted ? 'translate-x-6' : 'translate-x-1'
                 }`} />
               </button>
@@ -164,7 +164,7 @@ export function PermissionsModal({ folderId, folderName, onClose }: Props) {
                                 .then(() => { toast.success('Niveau mis à jour.'); invalidate() })
                                 .catch(() => toast.error('Erreur'))
                             }}
-                            className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                            className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-card focus:outline-none focus:ring-2 focus:ring-indigo-300"
                           >
                             <option value="read">Lecture</option>
                             <option value="write">Écriture</option>
@@ -190,7 +190,7 @@ export function PermissionsModal({ folderId, folderName, onClose }: Props) {
                     <select
                       value={selectedUserId}
                       onChange={(e) => setSelectedUserId(e.target.value)}
-                      className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                      className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 bg-card focus:outline-none focus:ring-2 focus:ring-indigo-300"
                     >
                       <option value="">Sélectionner un utilisateur…</option>
                       {availableUsers.map((u) => (
@@ -200,7 +200,7 @@ export function PermissionsModal({ folderId, folderName, onClose }: Props) {
                     <select
                       value={selectedLevel}
                       onChange={(e) => setSelectedLevel(e.target.value as PermissionLevel)}
-                      className="text-sm border border-gray-200 rounded-xl px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                      className="text-sm border border-gray-200 rounded-xl px-3 py-2 bg-card focus:outline-none focus:ring-2 focus:ring-indigo-300"
                     >
                       <option value="read">Lecture</option>
                       <option value="write">Écriture</option>

@@ -120,7 +120,7 @@ function PdfPane({
   }, [blob, page, totalPages])
 
   return (
-    <div className="flex-1 flex flex-col min-w-0 border border-[#E8E8E8] rounded-xl overflow-hidden">
+    <div className="flex-1 flex flex-col min-w-0 border border-base rounded-xl overflow-hidden">
       <div className="px-3 py-2 bg-[#1A1A1A] flex items-center gap-2">
         <FileText size={13} className="text-[#F5A800] shrink-0" />
         <span className="text-xs text-white/70 truncate">{label}</span>
@@ -175,12 +175,12 @@ function ImageSlider({ blobA, blobB, labelA, labelB }: {
         onTouchStart={() => { dragging.current = true }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#F5A800] rounded-full flex items-center justify-center shadow-lg">
-          <ArrowLeftRight size={14} className="text-[#1A1A1A]" />
+          <ArrowLeftRight size={14} className="text-primary" />
         </div>
       </div>
       {/* Labels */}
       <span className="absolute top-3 left-3 bg-black/60 text-white text-[10px] px-2 py-1 rounded-md">{labelA}</span>
-      <span className="absolute top-3 right-3 bg-[#F5A800]/90 text-[#1A1A1A] text-[10px] px-2 py-1 rounded-md font-bold">{labelB}</span>
+      <span className="absolute top-3 right-3 bg-[#F5A800]/90 text-primary text-[10px] px-2 py-1 rounded-md font-bold">{labelB}</span>
     </div>
   )
 }
@@ -201,7 +201,7 @@ function TextDiff({ blobA, blobB }: { blobA: Blob; blobB: Blob }) {
   const removed = lines.filter(l => l.type === 'removed').length
 
   if (loading) return (
-    <div className="flex items-center justify-center h-full gap-2 text-[#888]">
+    <div className="flex items-center justify-center h-full gap-2 text-muted">
       <Loader2 size={18} className="animate-spin text-[#F5A800]" />
       <span className="text-sm">Calcul des différences…</span>
     </div>
@@ -222,10 +222,10 @@ function TextDiff({ blobA, blobB }: { blobA: Blob; blobB: Blob }) {
                 line.type === 'added'   ? 'bg-green-950/50' :
                 line.type === 'removed' ? 'bg-red-950/50'   : ''
               }>
-                <td className="w-10 text-right pr-3 py-0.5 text-[#444] select-none border-r border-[#2A2A2A]">
+                <td className="w-10 text-right pr-3 py-0.5 text-secondary select-none border-r border-[#2A2A2A]">
                   {line.lineA ?? ''}
                 </td>
-                <td className="w-10 text-right pr-3 py-0.5 text-[#444] select-none border-r border-[#2A2A2A]">
+                <td className="w-10 text-right pr-3 py-0.5 text-secondary select-none border-r border-[#2A2A2A]">
                   {line.lineB ?? ''}
                 </td>
                 <td className="w-5 text-center py-0.5 select-none">
@@ -235,7 +235,7 @@ function TextDiff({ blobA, blobB }: { blobA: Blob; blobB: Blob }) {
                 <td className={`pl-2 py-0.5 whitespace-pre-wrap break-all ${
                   line.type === 'added'   ? 'text-green-300' :
                   line.type === 'removed' ? 'text-red-300'   :
-                  'text-[#CCCCCC]'
+                  'text-ghost'
                 }`}>
                   {line.text || ' '}
                 </td>
@@ -259,12 +259,12 @@ function MetaDiff({ vA, vB, docId }: { vA: DocumentVersionDTO; vB: DocumentVersi
   ]
   return (
     <div className="flex flex-col gap-5 p-6 max-w-2xl mx-auto w-full">
-      <div className="flex items-center gap-2 text-[#888] text-sm">
+      <div className="flex items-center gap-2 text-muted text-sm">
         <AlertCircle size={15} className="text-[#F5A800]" />
         Ce type de fichier ne peut pas être prévisualisé. Voici la comparaison des métadonnées.
       </div>
-      <div className="bg-white border border-[#E8E8E8] rounded-xl overflow-hidden shadow-sm">
-        <div className="grid grid-cols-3 bg-[#F5F5F5] text-[10px] font-bold uppercase tracking-widest text-[#AAA] px-5 py-2.5 border-b border-[#E8E8E8]">
+      <div className="bg-card border border-base rounded-xl overflow-hidden shadow-sm">
+        <div className="grid grid-cols-3 bg-muted text-[10px] font-bold uppercase tracking-widest text-faint px-5 py-2.5 border-b border-base">
           <span>Propriété</span>
           <span className="text-center">v{vA.versionNumber} (ancienne)</span>
           <span className="text-center text-[#F5A800]">v{vB.versionNumber} (nouvelle)</span>
@@ -272,10 +272,10 @@ function MetaDiff({ vA, vB, docId }: { vA: DocumentVersionDTO; vB: DocumentVersi
         {rows.map(row => {
           const changed = row.a !== row.b
           return (
-            <div key={row.label} className={`grid grid-cols-3 px-5 py-3 border-b border-[#F0F0F0] last:border-0 ${changed ? 'bg-amber-50' : ''}`}>
-              <span className="text-xs font-semibold text-[#555]">{row.label}</span>
-              <span className={`text-xs text-center ${changed ? 'text-red-600 line-through opacity-60' : 'text-[#333]'}`}>{row.a}</span>
-              <span className={`text-xs text-center font-medium ${changed ? 'text-green-700' : 'text-[#333]'}`}>{row.b}</span>
+            <div key={row.label} className={`grid grid-cols-3 px-5 py-3 border-b border-muted last:border-0 ${changed ? 'bg-amber-50' : ''}`}>
+              <span className="text-xs font-semibold text-secondary">{row.label}</span>
+              <span className={`text-xs text-center ${changed ? 'text-red-600 line-through opacity-60' : 'text-primary'}`}>{row.a}</span>
+              <span className={`text-xs text-center font-medium ${changed ? 'text-green-700' : 'text-primary'}`}>{row.b}</span>
             </div>
           )
         })}
@@ -285,7 +285,7 @@ function MetaDiff({ vA, vB, docId }: { vA: DocumentVersionDTO; vB: DocumentVersi
           <button
             key={v.id}
             onClick={() => downloadAuthenticatedFile(`/api/documents/${docId}/download?version=${v.versionNumber}`, v.originalFilename)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#E8E8E8] bg-white text-sm text-[#555] hover:border-[#F5A800] hover:text-[#F5A800] transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-base bg-card text-sm text-secondary hover:border-[#F5A800] hover:text-[#F5A800] transition-all"
           >
             <Download size={14} />
             Télécharger v{v.versionNumber}
@@ -369,35 +369,35 @@ export function VersionDiffModal({ doc, open, onClose }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={onClose} />
 
-      <div className="relative z-10 flex flex-col w-full max-w-7xl h-[95vh] bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <div className="relative z-10 flex flex-col w-full max-w-7xl h-[95vh] bg-card rounded-2xl shadow-2xl overflow-hidden">
 
         {/* ── Header ── */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-[#E8E8E8] bg-[#FAFAFA] shrink-0">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-base bg-subtle shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-[#1A1A1A] rounded-lg flex items-center justify-center shrink-0">
               <GitCompare size={15} className="text-[#F5A800]" />
             </div>
             <div>
-              <p className="text-sm font-bold text-[#1A1A1A]">Comparaison de versions</p>
-              <p className="text-[11px] text-[#AAA]">{doc.title}</p>
+              <p className="text-sm font-bold text-primary">Comparaison de versions</p>
+              <p className="text-[11px] text-faint">{doc.title}</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-[#AAA] hover:text-[#555] hover:bg-[#F0F0F0] transition-colors">
+          <button onClick={onClose} className="p-1.5 rounded-lg text-faint hover:text-secondary hover:bg-border-muted transition-colors">
             <X size={16} />
           </button>
         </div>
 
         {/* ── Version selectors ── */}
-        <div className="flex items-center gap-3 px-5 py-3 border-b border-[#E8E8E8] bg-white shrink-0 flex-wrap">
+        <div className="flex items-center gap-3 px-5 py-3 border-b border-base bg-card shrink-0 flex-wrap">
           <div className="flex items-center gap-2 flex-1 min-w-[200px]">
-            <span className="text-[10px] font-bold text-[#AAA] uppercase tracking-widest shrink-0">Ancienne</span>
+            <span className="text-[10px] font-bold text-faint uppercase tracking-widest shrink-0">Ancienne</span>
             <select
               value={idxA}
               onChange={e => {
                 const v = Number(e.target.value)
                 if (v !== idxB) setIdxA(v)
               }}
-              className="flex-1 text-sm border border-[#E8E8E8] rounded-lg px-2.5 py-1.5 bg-white text-[#333] focus:outline-none focus:ring-2 focus:ring-[#F5A800]"
+              className="flex-1 text-sm border border-base rounded-lg px-2.5 py-1.5 bg-card text-primary focus:outline-none focus:ring-2 focus:ring-[#F5A800]"
             >
               {sorted.map((v, i) => (
                 <option key={v.id} value={i} disabled={i === idxB}>
@@ -417,7 +417,7 @@ export function VersionDiffModal({ doc, open, onClose }: Props) {
                 const v = Number(e.target.value)
                 if (v !== idxA) setIdxB(v)
               }}
-              className="flex-1 text-sm border border-[#F5D580] rounded-lg px-2.5 py-1.5 bg-[#FFFDF5] text-[#333] focus:outline-none focus:ring-2 focus:ring-[#F5A800]"
+              className="flex-1 text-sm border border-[#F5D580] rounded-lg px-2.5 py-1.5 bg-[#FFFDF5] text-primary focus:outline-none focus:ring-2 focus:ring-[#F5A800]"
             >
               {sorted.map((v, i) => (
                 <option key={v.id} value={i} disabled={i === idxA}>
@@ -433,17 +433,17 @@ export function VersionDiffModal({ doc, open, onClose }: Props) {
               <button
                 onClick={() => setPdfPage(p => Math.max(1, p - 1))}
                 disabled={pdfPage <= 1}
-                className="p-1.5 rounded-lg border border-[#E8E8E8] text-[#555] hover:bg-[#F5F5F5] disabled:opacity-30 transition-colors"
+                className="p-1.5 rounded-lg border border-base text-secondary hover:bg-muted disabled:opacity-30 transition-colors"
               >
                 <ChevronLeft size={15} />
               </button>
-              <span className="text-sm text-[#555] min-w-[70px] text-center">
+              <span className="text-sm text-secondary min-w-[70px] text-center">
                 Page {pdfPage} / {totalPages}
               </span>
               <button
                 onClick={() => setPdfPage(p => Math.min(totalPages, p + 1))}
                 disabled={pdfPage >= totalPages}
-                className="p-1.5 rounded-lg border border-[#E8E8E8] text-[#555] hover:bg-[#F5F5F5] disabled:opacity-30 transition-colors"
+                className="p-1.5 rounded-lg border border-base text-secondary hover:bg-muted disabled:opacity-30 transition-colors"
               >
                 <ChevronRight size={15} />
               </button>
@@ -456,7 +456,7 @@ export function VersionDiffModal({ doc, open, onClose }: Props) {
           {loadingEither && (
             <div className="flex flex-col items-center justify-center h-full gap-3 bg-[#F9F9F9]">
               <div className="w-12 h-12 rounded-full border-4 border-[#F5A800]/20 border-t-[#F5A800] animate-spin" />
-              <p className="text-sm text-[#888]">Chargement des versions…</p>
+              <p className="text-sm text-muted">Chargement des versions…</p>
             </div>
           )}
 

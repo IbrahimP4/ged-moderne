@@ -28,8 +28,8 @@ function ActionModal({
     <Modal open={open} onClose={onClose} title={type === 'sign' ? 'Signer le document' : 'Refuser la demande'}>
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-[#333] mb-1.5">
-            Commentaire <span className="text-[#AAAAAA] font-normal">(optionnel)</span>
+          <label className="block text-sm font-medium text-primary mb-1.5">
+            Commentaire <span className="text-faint font-normal">(optionnel)</span>
           </label>
           <textarea
             autoFocus
@@ -37,7 +37,7 @@ function ActionModal({
             onChange={(e) => setComment(e.target.value)}
             rows={3}
             placeholder={type === 'sign' ? 'Note de signature…' : 'Raison du refus…'}
-            className="w-full px-3.5 py-2.5 rounded-md border border-[#E0E0E0] text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800] resize-none"
+            className="w-full px-3.5 py-2.5 rounded-md border border-strong text-sm focus:outline-none focus:ring-2 focus:ring-[#F5A800] focus:border-[#F5A800] resize-none"
           />
         </div>
         <div className="flex justify-end gap-2">
@@ -99,15 +99,15 @@ export function SignatureRequestsPage() {
   const pendingCount = all.filter((r) => r.status === 'pending').length
 
   return (
-    <div className="min-h-screen bg-[#F4F4F4]">
+    <div className="min-h-screen bg-page">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-1 h-5 bg-[#F5A800] rounded-full" />
-            <h1 className="text-xs font-bold text-[#555] uppercase tracking-widest">Demandes de signature</h1>
+            <h1 className="text-xs font-bold text-secondary uppercase tracking-widest">Demandes de signature</h1>
           </div>
-          <p className="text-xs text-[#888] ml-4">
+          <p className="text-xs text-muted ml-4">
             {pendingCount > 0
               ? <span className="text-[#A07000] font-semibold">{pendingCount} demande{pendingCount > 1 ? 's' : ''} en attente</span>
               : 'Toutes les demandes sont traitées'}
@@ -116,15 +116,15 @@ export function SignatureRequestsPage() {
 
         {/* Filtres */}
         <div className="flex items-center gap-2 mb-6 flex-wrap">
-          <Filter size={15} className="text-[#AAAAAA]" />
+          <Filter size={15} className="text-faint" />
           {(['all', 'pending', 'signed', 'declined'] as const).map((s) => (
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
                 statusFilter === s
-                  ? 'bg-[#F5A800] text-[#1A1A1A] border-[#F5A800]'
-                  : 'bg-white text-[#555] border-[#E0E0E0] hover:border-[#F5A800] hover:text-[#A07000]'
+                  ? 'bg-[#F5A800] text-primary border-[#F5A800]'
+                  : 'bg-card text-secondary border-strong hover:border-[#F5A800] hover:text-[#A07000]'
               }`}
             >
               {s === 'all'
@@ -136,9 +136,9 @@ export function SignatureRequestsPage() {
 
         {/* Liste */}
         {filtered.length === 0 ? (
-          <div className="bg-white rounded-lg border border-[#E8E8E8] text-center py-20">
-            <CheckCircle2 size={40} className="text-[#CCCCCC] mx-auto mb-3" />
-            <p className="text-[#888] font-medium text-sm">Aucune demande</p>
+          <div className="bg-card rounded-lg border border-base text-center py-20">
+            <CheckCircle2 size={40} className="text-ghost mx-auto mb-3" />
+            <p className="text-muted font-medium text-sm">Aucune demande</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -184,7 +184,7 @@ function RequestCard({
   const cfg = STATUS_CONFIG[req.status]
 
   return (
-    <div className="bg-white rounded-lg border border-[#E8E8E8] p-5 hover:border-[#F5A800] hover:shadow-sm transition-all">
+    <div className="bg-card rounded-lg border border-base p-5 hover:border-[#F5A800] hover:shadow-sm transition-all">
       <div className="flex items-start gap-4">
         {/* Icone statut */}
         <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
@@ -208,13 +208,13 @@ function RequestCard({
             <div>
               <Link
                 to={`/documents/${req.documentId}`}
-                className="font-semibold text-[#1A1A1A] hover:text-[#A07000] transition-colors flex items-center gap-1 text-sm"
+                className="font-semibold text-primary hover:text-[#A07000] transition-colors flex items-center gap-1 text-sm"
               >
                 {req.documentTitle}
-                <ChevronRight size={14} className="text-[#CCCCCC]" />
+                <ChevronRight size={14} className="text-ghost" />
               </Link>
-              <p className="text-xs text-[#888] mt-0.5">
-                Demandé par <span className="font-medium text-[#555]">{req.requesterUsername}</span>
+              <p className="text-xs text-muted mt-0.5">
+                Demandé par <span className="font-medium text-secondary">{req.requesterUsername}</span>
                 {' · '}
                 {new Date(req.requestedAt).toLocaleDateString('fr-FR', {
                   day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
@@ -227,9 +227,9 @@ function RequestCard({
           </div>
 
           {req.message && (
-            <div className="mt-3 flex items-start gap-2 bg-[#F5F5F5] rounded-md px-3 py-2 border border-[#E8E8E8]">
-              <MessageSquare size={14} className="text-[#AAAAAA] shrink-0 mt-0.5" />
-              <p className="text-sm text-[#555] italic">"{req.message}"</p>
+            <div className="mt-3 flex items-start gap-2 bg-muted rounded-md px-3 py-2 border border-base">
+              <MessageSquare size={14} className="text-faint shrink-0 mt-0.5" />
+              <p className="text-sm text-secondary italic">"{req.message}"</p>
             </div>
           )}
 
@@ -247,7 +247,7 @@ function RequestCard({
           )}
 
           {req.resolvedAt && (
-            <p className="text-xs text-[#AAAAAA] mt-2">
+            <p className="text-xs text-faint mt-2">
               Traité le {new Date(req.resolvedAt).toLocaleDateString('fr-FR', {
                 day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
               })}
@@ -257,10 +257,10 @@ function RequestCard({
       </div>
 
       {req.status === 'pending' && (
-        <div className="flex gap-2 mt-4 pt-4 border-t border-[#F0F0F0]">
+        <div className="flex gap-2 mt-4 pt-4 border-t border-muted">
           <button
             onClick={onSign}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-[#F5A800] text-[#1A1A1A] text-xs font-bold hover:bg-[#e09900] transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-[#F5A800] text-primary text-xs font-bold hover:bg-[#e09900] transition-colors"
           >
             <CheckCircle2 size={14} /> Signer
           </button>

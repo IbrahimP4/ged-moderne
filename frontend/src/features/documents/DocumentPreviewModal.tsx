@@ -138,7 +138,7 @@ function PdfViewer({ blob, filename }: { blob: Blob; filename: string }) {
           <button
             onClick={() => goTo(currentPage - 1)}
             disabled={currentPage <= 1}
-            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 transition-colors"
+            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-card/10 disabled:opacity-30 transition-colors"
           >
             <ChevronLeft size={16} />
           </button>
@@ -149,7 +149,7 @@ function PdfViewer({ blob, filename }: { blob: Blob; filename: string }) {
               max={totalPages}
               value={currentPage}
               onChange={e => goTo(Number(e.target.value))}
-              className="w-12 text-center bg-white/10 border border-white/20 rounded px-1 py-0.5 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#F5A800]"
+              className="w-12 text-center bg-card/10 border border-white/20 rounded px-1 py-0.5 text-white text-xs focus:outline-none focus:ring-1 focus:ring-[#F5A800]"
             />
             <span className="text-white/40">/</span>
             <span>{totalPages}</span>
@@ -157,7 +157,7 @@ function PdfViewer({ blob, filename }: { blob: Blob; filename: string }) {
           <button
             onClick={() => goTo(currentPage + 1)}
             disabled={currentPage >= totalPages}
-            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 transition-colors"
+            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-card/10 disabled:opacity-30 transition-colors"
           >
             <ChevronRight size={16} />
           </button>
@@ -168,14 +168,14 @@ function PdfViewer({ blob, filename }: { blob: Blob; filename: string }) {
           <button
             onClick={() => setZoomIdx(i => Math.max(0, i - 1))}
             disabled={zoomIdx === 0}
-            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 transition-colors"
+            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-card/10 disabled:opacity-30 transition-colors"
             title="Zoom arrière"
           >
             <ZoomOut size={15} />
           </button>
           <button
             onClick={() => setZoomIdx(DEFAULT_ZOOM_IDX)}
-            className="text-xs text-white/60 hover:text-white hover:bg-white/10 px-2 py-1 rounded-md transition-colors min-w-[46px] text-center"
+            className="text-xs text-white/60 hover:text-white hover:bg-card/10 px-2 py-1 rounded-md transition-colors min-w-[46px] text-center"
             title="Réinitialiser le zoom"
           >
             {Math.round(zoom * 100)}%
@@ -183,14 +183,14 @@ function PdfViewer({ blob, filename }: { blob: Blob; filename: string }) {
           <button
             onClick={() => setZoomIdx(i => Math.min(ZOOM_LEVELS.length - 1, i + 1))}
             disabled={zoomIdx === ZOOM_LEVELS.length - 1}
-            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30 transition-colors"
+            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-card/10 disabled:opacity-30 transition-colors"
             title="Zoom avant"
           >
             <ZoomIn size={15} />
           </button>
           <button
             onClick={() => setZoomIdx(DEFAULT_ZOOM_IDX)}
-            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-md text-white/60 hover:text-white hover:bg-card/10 transition-colors"
             title="Réinitialiser"
           >
             <RotateCcw size={14} />
@@ -257,19 +257,19 @@ function UnsupportedViewer({
   onDownload: () => void
 }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-5 bg-[#F4F4F4]">
+    <div className="flex flex-col items-center justify-center h-full gap-5 bg-page">
       <div className="w-20 h-20 bg-[#1A1A1A] rounded-2xl flex items-center justify-center shadow-xl">
         <FileText size={36} className="text-[#F5A800]" />
       </div>
       <div className="text-center">
-        <p className="text-base font-semibold text-[#1A1A1A]">Aperçu non disponible</p>
-        <p className="text-sm text-[#888] mt-1">
-          Le format <code className="bg-[#F0F0F0] px-1.5 py-0.5 rounded text-xs">{doc.mimeType}</code> ne peut pas être prévisualisé en ligne.
+        <p className="text-base font-semibold text-primary">Aperçu non disponible</p>
+        <p className="text-sm text-muted mt-1">
+          Le format <code className="bg-border-muted px-1.5 py-0.5 rounded text-xs">{doc.mimeType}</code> ne peut pas être prévisualisé en ligne.
         </p>
       </div>
       <button
         onClick={onDownload}
-        className="flex items-center gap-2 px-5 py-2.5 bg-[#1A1A1A] text-white text-sm font-semibold rounded-xl hover:bg-[#F5A800] hover:text-[#1A1A1A] transition-all duration-200 shadow-lg"
+        className="flex items-center gap-2 px-5 py-2.5 bg-[#1A1A1A] text-white text-sm font-semibold rounded-xl hover:bg-[#F5A800] hover:text-primary transition-all duration-200 shadow-lg"
       >
         <Download size={16} />
         Télécharger le fichier

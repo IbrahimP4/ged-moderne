@@ -38,7 +38,7 @@ export function TagEditor({ tags, onChange, disabled }: TagEditorProps) {
 
   return (
     <div
-      className="flex flex-wrap gap-1.5 min-h-[36px] px-3 py-2 rounded-lg border border-gray-300 bg-white cursor-text focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-transparent transition-shadow"
+      className="flex flex-wrap gap-1.5 min-h-[36px] px-3 py-2 rounded-lg border border-gray-300 bg-card cursor-text focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-transparent transition-shadow"
       onClick={() => inputRef.current?.focus()}
     >
       {tags.map((tag) => (

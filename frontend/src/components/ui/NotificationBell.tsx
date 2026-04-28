@@ -22,16 +22,18 @@ function NotifIcon({ type }: { type: string }) {
     return <FileSignature size={14} className="text-[#F5A800] shrink-0" />
   if (type === 'message_received')
     return <MessageCircle size={14} className="text-sky-500 shrink-0" />
-  return <Bell size={14} className="text-[#888] shrink-0" />
+  return <Bell size={14} className="text-muted shrink-0" />
 }
 
 function notifBg(type: string): string {
-  if (type === 'document_approved')       return 'bg-green-50 border-green-100'
-  if (type === 'document_rejected')       return 'bg-red-50 border-red-100'
-  if (type === 'document_pending_review') return 'bg-amber-50 border-amber-100'
-  if (type === 'signature_requested')     return 'bg-[#FFF8E7] border-[#F5E4A0]'
-  if (type === 'message_received')        return 'bg-sky-50 border-sky-100'
-  return 'bg-[#F5F5F5] border-[#E0E0E0]'
+  const variants: Record<string, string> = {
+    document_approved:       'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800/40',
+    document_rejected:       'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800/40',
+    document_pending_review: 'bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800/40',
+    signature_requested:     'bg-amber-50/80 border-amber-200 dark:bg-amber-900/15 dark:border-amber-800/30',
+    message_received:        'bg-sky-50 border-sky-200 dark:bg-sky-900/20 dark:border-sky-800/40',
+  }
+  return variants[type] ?? 'bg-muted border-strong dark:bg-[#242424] dark:border-[#333]'
 }
 
 function timeAgo(iso: string): string {
@@ -73,14 +75,14 @@ function NotifCard({
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-1">
-            <p className="text-xs font-semibold text-[#1A1A1A] leading-snug">
+            <p className="text-xs font-semibold text-primary dark:text-[#EFEFEF] leading-snug">
               {notif.title}
             </p>
-            <span className="text-[10px] text-[#888] shrink-0 mt-0.5">
+            <span className="text-[10px] text-muted dark:text-[#707070] shrink-0 mt-0.5">
               {timeAgo(notif.createdAt)}
             </span>
           </div>
-          <p className="text-xs text-[#555] mt-0.5 leading-snug line-clamp-2">
+          <p className="text-xs text-secondary dark:text-[#A8A8A8] mt-0.5 leading-snug line-clamp-2">
             {notif.body}
           </p>
         </div>
@@ -124,12 +126,12 @@ export function NotificationBell({ mobile = false }: { mobile?: boolean }) {
       {/* Bouton cloche */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="relative p-1.5 rounded-lg text-[#888] hover:text-[#F5A800] transition-colors"
+        className="relative p-1.5 rounded-lg text-muted hover:text-[#F5A800] transition-colors"
         title="Notifications"
       >
         <Bell size={18} />
         {unreadNotifications > 0 && (
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#F5A800] text-[#1A1A1A] text-[10px] font-bold rounded-full flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#F5A800] text-primary text-[10px] font-bold rounded-full flex items-center justify-center">
             {unreadNotifications > 9 ? '9+' : unreadNotifications}
           </span>
         )}
@@ -137,18 +139,18 @@ export function NotificationBell({ mobile = false }: { mobile?: boolean }) {
 
       {/* Panneau déroulant */}
       {open && (
-        <div className={`fixed w-[360px] max-w-[calc(100vw-16px)] bg-white rounded-lg shadow-2xl border border-[#E8E8E8] z-50 overflow-hidden ${
+        <div className={`fixed w-[360px] max-w-[calc(100vw-16px)] bg-card dark:bg-[#1A1A1A] rounded-lg shadow-2xl border border-base dark:border-[#2E2E2E] z-50 overflow-hidden ${
           mobile
             ? 'top-14 right-2'
             : 'bottom-16 left-[256px]'
         }`}>
           {/* Header */}
-          <div className="px-4 py-3 border-b border-[#F0F0F0] flex items-center justify-between bg-[#FAFAFA] border-l-4 border-l-[#F5A800]">
+          <div className="px-4 py-3 border-b border-muted dark:border-[#2E2E2E] flex items-center justify-between bg-subtle dark:bg-[#1E1E1E] border-l-4 border-l-[#F5A800]">
             <div className="flex items-center gap-2">
               <Bell size={15} className="text-[#F5A800]" />
-              <span className="text-sm font-bold text-[#1A1A1A]">Notifications</span>
+              <span className="text-sm font-bold text-primary dark:text-[#EFEFEF]">Notifications</span>
               {unreadNotifications > 0 && (
-                <span className="bg-[#F5A800] text-[#1A1A1A] text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                <span className="bg-[#F5A800] text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full">
                   {unreadNotifications}
                 </span>
               )}
@@ -157,7 +159,7 @@ export function NotificationBell({ mobile = false }: { mobile?: boolean }) {
               {unreadNotifications > 0 && (
                 <button
                   onClick={() => readAllMut.mutate()}
-                  className="flex items-center gap-1 text-[11px] text-[#555] hover:text-[#F5A800] transition-colors"
+                  className="flex items-center gap-1 text-[11px] text-secondary dark:text-[#A8A8A8] hover:text-[#F5A800] transition-colors"
                 >
                   <Check size={11} /> Tout lire
                 </button>
@@ -176,9 +178,9 @@ export function NotificationBell({ mobile = false }: { mobile?: boolean }) {
           <div className="p-3 max-h-[420px] overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="text-center py-10">
-                <Bell size={32} className="text-[#E0E0E0] mx-auto mb-3" />
-                <p className="text-sm font-medium text-[#888]">Aucune notification</p>
-                <p className="text-xs text-[#BBB] mt-1">Tout est à jour !</p>
+                <Bell size={32} className="text-[#E0E0E0] dark:text-primary mx-auto mb-3" />
+                <p className="text-sm font-medium text-muted dark:text-[#707070]">Aucune notification</p>
+                <p className="text-xs text-faint dark:text-[#484848] mt-1">Tout est à jour !</p>
               </div>
             ) : (
               notifications.map((n) => (

@@ -47,11 +47,11 @@ const STATUS_OPTS: { value: DocumentStatus | ''; label: string; icon?: React.Rea
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
 function FileIcon({ mimeType }: { mimeType: string | null }) {
-  if (!mimeType) return <FileText size={20} className="text-[#AAA]" />
+  if (!mimeType) return <FileText size={20} className="text-faint" />
   if (mimeType.startsWith('image/')) return <FileImage size={20} className="text-violet-500" />
   if (mimeType === 'application/pdf') return <FileText size={20} className="text-red-500" />
   if (mimeType.includes('word') || mimeType.includes('document')) return <FileText size={20} className="text-blue-500" />
-  return <File size={20} className="text-[#888]" />
+  return <File size={20} className="text-muted" />
 }
 
 /**
@@ -114,12 +114,12 @@ function SearchResultCard({
 
   return (
     <div
-      className="group bg-white rounded-xl border border-[#E8E8E8] hover:border-[#F5A800] hover:shadow-md transition-all overflow-hidden cursor-pointer"
+      className="group bg-card rounded-xl border border-base hover:border-[#F5A800] hover:shadow-md transition-all overflow-hidden cursor-pointer"
       onClick={() => navigate(`/documents/${result.id}`)}
     >
       <div className="flex items-start gap-4 p-4">
         {/* Icône fichier */}
-        <div className="w-10 h-10 bg-[#F5F5F5] group-hover:bg-[#FFF3CC] rounded-lg flex items-center justify-center shrink-0 transition-colors mt-0.5">
+        <div className="w-10 h-10 bg-muted group-hover:bg-[#FFF3CC] rounded-lg flex items-center justify-center shrink-0 transition-colors mt-0.5">
           <FileIcon mimeType={result.mimeType} />
         </div>
 
@@ -127,7 +127,7 @@ function SearchResultCard({
         <div className="flex-1 min-w-0">
           {/* Titre + badge statut */}
           <div className="flex items-start justify-between gap-3 mb-1">
-            <h3 className="text-sm font-semibold text-[#1A1A1A] group-hover:text-[#A07000] transition-colors leading-snug">
+            <h3 className="text-sm font-semibold text-primary group-hover:text-[#A07000] transition-colors leading-snug">
               <HighlightedText text={result.title} query={query} />
             </h3>
             <div className="flex items-center gap-2 shrink-0">
@@ -153,14 +153,14 @@ function SearchResultCard({
                   Trouvé dans le contenu
                 </span>
               </div>
-              <p className="text-xs text-[#555] bg-[#F8F8FF] border border-[#E8E8FF] rounded-lg px-3 py-2 leading-relaxed font-mono-like italic">
+              <p className="text-xs text-secondary bg-[#F8F8FF] border border-[#E8E8FF] rounded-lg px-3 py-2 leading-relaxed font-mono-like italic">
                 <HighlightedText text={result.snippet} query={query} />
               </p>
             </div>
           )}
 
           {/* Métadonnées */}
-          <div className="flex items-center gap-3 text-xs text-[#999] flex-wrap mt-1.5">
+          <div className="flex items-center gap-3 text-xs text-muted flex-wrap mt-1.5">
             <button
               onClick={e => { e.stopPropagation(); navigate(`/folders/${result.folderId}`) }}
               className="flex items-center gap-1 hover:text-[#F5A800] transition-colors"
@@ -174,7 +174,7 @@ function SearchResultCard({
               {formatDate(result.updatedAt)}
             </span>
             {result.versionCount > 1 && (
-              <span className="flex items-center gap-1 text-[#888]">
+              <span className="flex items-center gap-1 text-muted">
                 <Clock size={10} />
                 v{result.versionCount}
               </span>
@@ -195,12 +195,12 @@ function SearchResultCard({
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
           <button
             onClick={e => { e.stopPropagation(); onPreview(result) }}
-            className="p-1.5 rounded-lg text-[#888] hover:text-[#6366F1] hover:bg-indigo-50 transition-colors"
+            className="p-1.5 rounded-lg text-muted hover:text-[#6366F1] hover:bg-indigo-50 transition-colors"
             title="Aperçu rapide"
           >
             <Eye size={15} />
           </button>
-          <ChevronRight size={15} className="text-[#CCC] group-hover:text-[#F5A800] transition-colors" />
+          <ChevronRight size={15} className="text-ghost group-hover:text-[#F5A800] transition-colors" />
         </div>
       </div>
     </div>
@@ -297,11 +297,11 @@ export function SearchPage() {
   } as unknown as DocumentDTO : null
 
   return (
-    <div className="min-h-screen bg-[#F4F4F4]">
+    <div className="min-h-screen bg-page">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         {/* ── Barre de recherche ─────────────────────────────────────────── */}
-        <div className="bg-white rounded-xl border border-[#E8E8E8] shadow-sm mb-5 overflow-hidden">
+        <div className="bg-card rounded-xl border border-base shadow-sm mb-5 overflow-hidden">
           <div className="flex items-center gap-3 px-5 py-4">
             <Search size={20} className="text-[#F5A800] shrink-0" />
             <input
@@ -311,13 +311,13 @@ export function SearchPage() {
               value={inputValue}
               onChange={e => setInputValue(e.target.value)}
               placeholder="Rechercher dans les titres et le contenu des documents…"
-              className="flex-1 text-sm bg-transparent text-[#1A1A1A] placeholder-[#AAA] focus:outline-none"
+              className="flex-1 text-sm bg-transparent text-primary placeholder-[#AAA] focus:outline-none"
             />
             <div className="flex items-center gap-2 shrink-0">
               {(inputValue || status) && (
                 <button
                   onClick={clearSearch}
-                  className="p-1 rounded-md text-[#AAA] hover:text-[#555] hover:bg-[#F5F5F5] transition-colors"
+                  className="p-1 rounded-md text-faint hover:text-secondary hover:bg-muted transition-colors"
                 >
                   <X size={15} />
                 </button>
@@ -327,14 +327,14 @@ export function SearchPage() {
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                   showFilters || status
                     ? 'bg-[#FFF3CC] text-[#A07000] border border-[#F5D580]'
-                    : 'text-[#888] hover:bg-[#F5F5F5]'
+                    : 'text-muted hover:bg-muted'
                 }`}
               >
                 <Filter size={13} />
                 Filtres
                 {status && <span className="w-1.5 h-1.5 rounded-full bg-[#F5A800]" />}
               </button>
-              <kbd className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 bg-[#F5F5F5] border border-[#E0E0E0] rounded text-[10px] text-[#888] font-mono">
+              <kbd className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 bg-muted border border-strong rounded text-[10px] text-muted font-mono">
                 ⌘K
               </kbd>
             </div>
@@ -342,8 +342,8 @@ export function SearchPage() {
 
           {/* Filter bar */}
           {showFilters && (
-            <div className="border-t border-[#F0F0F0] px-5 py-3 bg-[#FAFAFA] flex items-center gap-3 flex-wrap">
-              <span className="text-xs font-semibold text-[#888] uppercase tracking-wide">Statut :</span>
+            <div className="border-t border-muted px-5 py-3 bg-subtle flex items-center gap-3 flex-wrap">
+              <span className="text-xs font-semibold text-muted uppercase tracking-wide">Statut :</span>
               <div className="flex items-center gap-1.5 flex-wrap">
                 {STATUS_OPTS.map(opt => (
                   <button
@@ -351,8 +351,8 @@ export function SearchPage() {
                     onClick={() => setStatus(opt.value)}
                     className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
                       status === opt.value
-                        ? 'bg-[#F5A800] text-[#1A1A1A] shadow-sm'
-                        : 'bg-white border border-[#E0E0E0] text-[#555] hover:border-[#F5A800] hover:text-[#A07000]'
+                        ? 'bg-[#F5A800] text-primary shadow-sm'
+                        : 'bg-card border border-strong text-secondary hover:border-[#F5A800] hover:text-[#A07000]'
                     }`}
                   >
                     {opt.icon}
@@ -370,7 +370,7 @@ export function SearchPage() {
             <div className="w-1 h-4 bg-[#F5A800] rounded-full" />
             {hasQuery ? (
               <div className="flex items-center gap-2 flex-wrap">
-                <p className="text-xs font-bold text-[#555] uppercase tracking-widest">
+                <p className="text-xs font-bold text-secondary uppercase tracking-widest">
                   {isFetching
                     ? 'Recherche en cours…'
                     : `${data?.total ?? 0} résultat${(data?.total ?? 0) !== 1 ? 's' : ''}`
@@ -388,14 +388,14 @@ export function SearchPage() {
                 )}
               </div>
             ) : (
-              <p className="text-xs font-bold text-[#555] uppercase tracking-widest">Recherche full-text</p>
+              <p className="text-xs font-bold text-secondary uppercase tracking-widest">Recherche full-text</p>
             )}
           </div>
 
           {hasQuery && (data?.total ?? 0) > 0 && (
             <button
               onClick={() => setSortDesc(!sortDesc)}
-              className="flex items-center gap-1.5 text-xs font-medium text-[#888] hover:text-[#555] transition-colors"
+              className="flex items-center gap-1.5 text-xs font-medium text-muted hover:text-secondary transition-colors"
             >
               {sortDesc ? <SortDesc size={14} /> : <SortAsc size={14} />}
               {sortDesc ? 'Plus récents' : 'Plus anciens'}
@@ -405,19 +405,19 @@ export function SearchPage() {
 
         {/* ── État vide ─────────────────────────────────────────────────────── */}
         {!hasQuery && (
-          <div className="bg-white rounded-xl border border-[#E8E8E8] flex flex-col items-center justify-center py-24 text-center">
+          <div className="bg-card rounded-xl border border-base flex flex-col items-center justify-center py-24 text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-[#FFF3CC] to-[#FFE08A] rounded-2xl flex items-center justify-center mb-5 shadow-sm">
               <Search size={32} className="text-[#F5A800]" />
             </div>
-            <h2 className="text-base font-bold text-[#1A1A1A] mb-1">Recherche intelligente</h2>
-            <p className="text-sm text-[#888] max-w-xs">
+            <h2 className="text-base font-bold text-primary mb-1">Recherche intelligente</h2>
+            <p className="text-sm text-muted max-w-xs">
               Tapez au moins 2 caractères pour chercher dans les <strong>titres</strong> et le <strong>contenu</strong> de vos documents (PDF, Word, texte…)
             </p>
-            <div className="mt-5 flex items-center gap-2 flex-wrap justify-center text-xs text-[#AAA]">
-              <span className="px-2.5 py-1 bg-[#F5F5F5] rounded-full">Recherche multi-mots</span>
-              <span className="px-2.5 py-1 bg-[#F5F5F5] rounded-full">Contenu des PDFs</span>
-              <span className="px-2.5 py-1 bg-[#F5F5F5] rounded-full">Documents Word</span>
-              <span className="px-2.5 py-1 bg-[#F5F5F5] rounded-full">Fichiers texte</span>
+            <div className="mt-5 flex items-center gap-2 flex-wrap justify-center text-xs text-faint">
+              <span className="px-2.5 py-1 bg-muted rounded-full">Recherche multi-mots</span>
+              <span className="px-2.5 py-1 bg-muted rounded-full">Contenu des PDFs</span>
+              <span className="px-2.5 py-1 bg-muted rounded-full">Documents Word</span>
+              <span className="px-2.5 py-1 bg-muted rounded-full">Fichiers texte</span>
             </div>
           </div>
         )}
@@ -426,18 +426,18 @@ export function SearchPage() {
         {hasQuery && isLoading && (
           <div className="flex flex-col items-center justify-center py-16">
             <div className="w-10 h-10 border-2 border-[#F5A800] border-t-transparent rounded-full animate-spin mb-3" />
-            <p className="text-sm text-[#888]">Recherche dans les titres et contenus…</p>
+            <p className="text-sm text-muted">Recherche dans les titres et contenus…</p>
           </div>
         )}
 
         {/* ── Aucun résultat ────────────────────────────────────────────────── */}
         {hasQuery && !isLoading && data && data.results.length === 0 && (
-          <div className="bg-white rounded-xl border border-[#E8E8E8] flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 bg-[#F5F5F5] rounded-xl flex items-center justify-center mb-4">
-              <FileText size={28} className="text-[#CCC]" />
+          <div className="bg-card rounded-xl border border-base flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-16 h-16 bg-muted rounded-xl flex items-center justify-center mb-4">
+              <FileText size={28} className="text-ghost" />
             </div>
-            <p className="text-sm font-semibold text-[#444]">Aucun document trouvé</p>
-            <p className="text-xs mt-1 text-[#888] max-w-xs">
+            <p className="text-sm font-semibold text-secondary">Aucun document trouvé</p>
+            <p className="text-xs mt-1 text-muted max-w-xs">
               Aucun titre ni contenu ne contient « <strong>{qParam}</strong> »
             </p>
             {status && (

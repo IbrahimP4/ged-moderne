@@ -1,4 +1,5 @@
 import { api } from '@/lib/axios'
+import { toast } from 'sonner'
 
 function readFilename(contentDisposition?: string): string | null {
   if (!contentDisposition) return null
@@ -11,16 +12,22 @@ function readFilename(contentDisposition?: string): string | null {
 }
 
 export async function downloadAuthenticatedFile(url: string, fallbackFilename: string): Promise<void> {
-  const response = await api.get<Blob>(url, { responseType: 'blob' })
-  const blobUrl = window.URL.createObjectURL(response.data)
-  const filename = readFilename(response.headers['content-disposition']) ?? fallbackFilename
+  try {
+    const targetUrl = url.startsWith('/api') ? url.slice(4) : url
+    const response = await api.get<Blob>(targetUrl, { responseType: 'blob' })
+    const blobUrl = window.URL.createObjectURL(response.data)
+    const filename = readFilename(response.headers['content-disposition']) ?? fallbackFilename
 
-  const link = document.createElement('a')
-  link.href = blobUrl
-  link.download = filename
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
 
-  window.URL.revokeObjectURL(blobUrl)
+    window.URL.revokeObjectURL(blobUrl)
+  } catch (error) {
+    toast.error('Erreur lors du téléchargement.')
+    console.error('Download error:', error)
+  }
 }

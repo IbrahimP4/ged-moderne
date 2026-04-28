@@ -7,6 +7,8 @@ import {
   ChevronLeft, ChevronRight,
 } from 'lucide-react'
 import { api } from '@/lib/axios'
+import { useAuthStore } from '@/store/auth'
+import { toast } from 'sonner'
 import { PageSpinner } from '@/components/ui/Spinner'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import type { AuditLogEntry } from '@/types'
@@ -205,15 +207,15 @@ function ServerPagination({
 
   return (
     <div className="flex items-center justify-between mt-5 flex-wrap gap-3">
-      <p className="text-xs text-[#888]">
-        Entrées <strong className="text-[#1A1A1A]">{from}–{to}</strong> sur{' '}
-        <strong className="text-[#1A1A1A]">{total}</strong>
+      <p className="text-xs text-muted">
+        Entrées <strong className="text-primary">{from}–{to}</strong> sur{' '}
+        <strong className="text-primary">{total}</strong>
       </p>
       <div className="flex items-center gap-1">
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#888] hover:bg-[#F0F0F0] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:bg-border-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           <ChevronLeft size={15} />
         </button>
@@ -232,7 +234,7 @@ function ServerPagination({
               className={`w-8 h-8 rounded-lg text-xs font-semibold transition-all ${
                 p === page
                   ? 'bg-[#1A1A1A] text-white'
-                  : 'text-[#555] hover:bg-[#F0F0F0]'
+                  : 'text-secondary hover:bg-border-muted'
               }`}
             >
               {p}
@@ -243,7 +245,7 @@ function ServerPagination({
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page >= pages}
-          className="w-8 h-8 rounded-lg flex items-center justify-center text-[#888] hover:bg-[#F0F0F0] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:bg-border-muted disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
         >
           <ChevronRight size={15} />
         </button>
@@ -319,10 +321,14 @@ export function AuditPage() {
     const url = new URL('/api/admin/audit/export-csv', window.location.origin)
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, String(v)))
 
-    const token = localStorage.getItem('token') ?? sessionStorage.getItem('token') ?? ''
+    const token = useAuthStore.getState().token ?? ''
     const res = await fetch(url.toString(), {
       headers: { Authorization: `Bearer ${token}` },
     })
+    if (!res.ok) {
+      toast.error('Erreur lors de l\'export CSV.')
+      return
+    }
     const blob = await res.blob()
     const href = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -335,36 +341,36 @@ export function AuditPage() {
   if (isLoading) return <PageSpinner />
 
   return (
-    <div className="min-h-screen bg-[#F4F4F4]">
+    <div className="min-h-screen bg-page">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
         {/* ── Header ── */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-1">
             <div className="w-1 h-6 bg-[#F5A800] rounded-full" />
-            <h1 className="text-xl font-black text-[#1A1A1A] tracking-tight">Journal d'activité</h1>
+            <h1 className="text-xl font-black text-primary tracking-tight">Journal d'activité</h1>
           </div>
-          <p className="text-sm text-[#888] ml-4">
+          <p className="text-sm text-muted ml-4">
             Historique complet des actions effectuées dans l'application
           </p>
         </div>
 
         {/* ── Toolbar ── */}
-        <div className="bg-white border border-[#E8E8E8] rounded-xl p-3 mb-5 flex flex-col sm:flex-row gap-3 shadow-sm">
+        <div className="bg-card border border-base rounded-xl p-3 mb-5 flex flex-col sm:flex-row gap-3 shadow-sm">
           {/* Recherche */}
           <div className="relative flex-1">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#AAA]" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-faint" />
             <input
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Rechercher une action, un utilisateur…"
-              className="w-full pl-9 pr-8 py-2 rounded-lg border border-[#E8E8E8] text-sm bg-[#FAFAFA] focus:outline-none focus:ring-2 focus:ring-[#F5A800] text-[#1A1A1A] placeholder-[#CCC]"
+              className="w-full pl-9 pr-8 py-2 rounded-lg border border-base text-sm bg-subtle focus:outline-none focus:ring-2 focus:ring-[#F5A800] text-primary placeholder-[#CCC]"
             />
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#AAA] hover:text-[#555]"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-faint hover:text-secondary"
               >
                 <X size={13} />
               </button>
@@ -373,7 +379,7 @@ export function AuditPage() {
 
           {/* Filtre catégorie */}
           <div className="flex items-center gap-1 flex-wrap">
-            <Filter size={13} className="text-[#AAA] shrink-0 mr-1" />
+            <Filter size={13} className="text-faint shrink-0 mr-1" />
             {CATEGORIES.map(cat => (
               <button
                 key={cat.key}
@@ -381,7 +387,7 @@ export function AuditPage() {
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   category === cat.key
                     ? 'bg-[#1A1A1A] text-white'
-                    : 'bg-[#F5F5F5] text-[#888] hover:bg-[#EBEBEB] hover:text-[#555]'
+                    : 'bg-muted text-muted hover:bg-border hover:text-secondary'
                 }`}
               >
                 {cat.label}
@@ -394,14 +400,14 @@ export function AuditPage() {
             <button
               onClick={() => refetch()}
               disabled={isFetching}
-              className="p-2 rounded-lg text-[#888] hover:bg-[#F5F5F5] hover:text-[#555] transition-colors disabled:opacity-50"
+              className="p-2 rounded-lg text-muted hover:bg-muted hover:text-secondary transition-colors disabled:opacity-50"
               title="Actualiser"
             >
               <RefreshCw size={15} className={isFetching ? 'animate-spin' : ''} />
             </button>
             <button
               onClick={handleExportCsv}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1A1A1A] text-white text-xs font-semibold hover:bg-[#F5A800] hover:text-[#1A1A1A] transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1A1A1A] text-white text-xs font-semibold hover:bg-[#F5A800] hover:text-primary transition-all"
               title="Exporter en CSV (Excel)"
             >
               <Download size={13} />
@@ -412,14 +418,14 @@ export function AuditPage() {
 
         {/* ── Résumé ── */}
         {pagination && (
-          <div className="flex items-center gap-2 mb-4 text-sm text-[#888]">
+          <div className="flex items-center gap-2 mb-4 text-sm text-muted">
             <Clock size={13} />
             <span>
-              <strong className="text-[#1A1A1A]">{pagination.total}</strong> événement{pagination.total !== 1 ? 's' : ''}
+              <strong className="text-primary">{pagination.total}</strong> événement{pagination.total !== 1 ? 's' : ''}
               {debouncedSearch && ` correspondant à "${debouncedSearch}"`}
               {category !== 'all' && ` dans la catégorie "${CATEGORIES.find(c => c.key === category)?.label}"`}
               {pagination.pages > 1 && (
-                <span className="ml-2 text-xs bg-[#F5F5F5] border border-[#E8E8E8] rounded-full px-2 py-0.5">
+                <span className="ml-2 text-xs bg-muted border border-base rounded-full px-2 py-0.5">
                   Page {pagination.page}/{pagination.pages}
                 </span>
               )}
@@ -429,9 +435,9 @@ export function AuditPage() {
 
         {/* ── Timeline groupée par jour ── */}
         {grouped.length === 0 ? (
-          <div className="bg-white border border-[#E8E8E8] rounded-xl text-center py-20 shadow-sm">
+          <div className="bg-card border border-base rounded-xl text-center py-20 shadow-sm">
             <AlertTriangle size={36} className="mx-auto text-[#D0D0D0] mb-3" />
-            <p className="text-[#888] font-medium text-sm">Aucune activité trouvée</p>
+            <p className="text-muted font-medium text-sm">Aucune activité trouvée</p>
             {search && (
               <button onClick={() => setSearch('')} className="text-xs text-[#F5A800] hover:underline mt-1">
                 Effacer la recherche
@@ -444,11 +450,11 @@ export function AuditPage() {
               <div key={dateKey}>
                 {/* Séparateur de jour */}
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="h-px flex-1 bg-[#E8E8E8]" />
-                  <span className="text-[11px] font-bold text-[#AAA] uppercase tracking-widest px-2">
+                  <div className="h-px flex-1 bg-border" />
+                  <span className="text-[11px] font-bold text-faint uppercase tracking-widest px-2">
                     {formatDateGroup(dayEntries[0].occurredAt)}
                   </span>
-                  <div className="h-px flex-1 bg-[#E8E8E8]" />
+                  <div className="h-px flex-1 bg-border" />
                 </div>
 
                 <div className="space-y-2">
@@ -460,7 +466,7 @@ export function AuditPage() {
                     return (
                       <div
                         key={entry.id}
-                        className="bg-white border border-[#E8E8E8] rounded-xl overflow-hidden hover:border-[#D0D0D0] hover:shadow-sm transition-all"
+                        className="bg-card border border-base rounded-xl overflow-hidden hover:border-strong hover:shadow-sm transition-all"
                       >
                         <div className="flex items-start gap-4 px-4 py-3.5">
                           <div
@@ -475,7 +481,7 @@ export function AuditPage() {
                               <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${meta.color}`}>
                                 {meta.label}
                               </span>
-                              <span className="text-[11px] text-[#AAA] shrink-0 flex items-center gap-1">
+                              <span className="text-[11px] text-faint shrink-0 flex items-center gap-1">
                                 <Clock size={11} />
                                 {new Date(entry.occurredAt).toLocaleTimeString('fr-FR', {
                                   hour: '2-digit', minute: '2-digit',
@@ -483,16 +489,16 @@ export function AuditPage() {
                               </span>
                             </div>
 
-                            <p className="text-sm text-[#1A1A1A] font-medium leading-snug">
+                            <p className="text-sm text-primary font-medium leading-snug">
                               {humanizeEvent(entry)}
                             </p>
 
                             <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-                              <span className="flex items-center gap-1 text-xs text-[#888]">
+                              <span className="flex items-center gap-1 text-xs text-muted">
                                 <User size={11} />
                                 {entry.actorUsername
-                                  ? <strong className="text-[#555]">{entry.actorUsername}</strong>
-                                  : <em className="text-[#AAA]">Action automatique</em>
+                                  ? <strong className="text-secondary">{entry.actorUsername}</strong>
+                                  : <em className="text-faint">Action automatique</em>
                                 }
                               </span>
                             </div>
@@ -501,7 +507,7 @@ export function AuditPage() {
                           {hasMore && (
                             <button
                               onClick={() => toggleExpanded(entry.id)}
-                              className="shrink-0 p-1.5 rounded-lg text-[#AAA] hover:text-[#555] hover:bg-[#F5F5F5] transition-all"
+                              className="shrink-0 p-1.5 rounded-lg text-faint hover:text-secondary hover:bg-muted transition-all"
                               title={isOpen ? 'Masquer les détails' : 'Voir les détails techniques'}
                             >
                               <ChevronDown
@@ -513,24 +519,24 @@ export function AuditPage() {
                         </div>
 
                         {hasMore && isOpen && (
-                          <div className="border-t border-[#F0F0F0] bg-[#FAFAFA] px-4 py-3">
-                            <p className="text-[10px] font-bold text-[#AAA] uppercase tracking-widest mb-2">
+                          <div className="border-t border-muted bg-subtle px-4 py-3">
+                            <p className="text-[10px] font-bold text-faint uppercase tracking-widest mb-2">
                               Détails techniques
                             </p>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
                               {Object.entries(entry.payload as Record<string, unknown>).map(([k, v]) => (
                                 <div key={k} className="flex items-start gap-2 text-xs">
-                                  <span className="text-[#AAA] shrink-0 capitalize min-w-[80px]">
+                                  <span className="text-faint shrink-0 capitalize min-w-[80px]">
                                     {k.replace(/_/g, ' ')}
                                   </span>
-                                  <span className="text-[#555] font-medium break-all">
+                                  <span className="text-secondary font-medium break-all">
                                     {typeof v === 'object' ? JSON.stringify(v) : String(v)}
                                   </span>
                                 </div>
                               ))}
                               <div className="flex items-start gap-2 text-xs col-span-full mt-1 pt-1 border-t border-[#EBEBEB]">
-                                <span className="text-[#AAA] shrink-0 min-w-[80px]">ID objet</span>
-                                <span className="text-[#CCC] font-mono text-[10px]">{entry.aggregateId}</span>
+                                <span className="text-faint shrink-0 min-w-[80px]">ID objet</span>
+                                <span className="text-ghost font-mono text-[10px]">{entry.aggregateId}</span>
                               </div>
                             </div>
                           </div>

@@ -45,12 +45,12 @@ export function DocumentCommentSection({ documentId }: Props) {
   }
 
   return (
-    <div className="bg-white rounded-lg border border-[#E8E8E8] shadow-sm overflow-hidden">
+    <div className="bg-card rounded-lg border border-base shadow-sm overflow-hidden">
       {/* Header with yellow accent bar */}
       <div className="border-l-4 border-[#F5A800]">
-        <div className="px-5 py-4 bg-[#FAFAFA] border-b border-[#F0F0F0] flex items-center gap-2">
+        <div className="px-5 py-4 bg-subtle border-b border-muted flex items-center gap-2">
           <MessageSquare size={16} className="text-[#F5A800]" />
-          <h2 className="text-sm font-semibold text-[#1A1A1A]">Commentaires</h2>
+          <h2 className="text-sm font-semibold text-primary">Commentaires</h2>
           {comments.length > 0 && (
             <span className="bg-[#FFF3CC] text-[#A07000] text-xs font-semibold px-2 py-0.5 rounded-full">
               {comments.length}
@@ -59,9 +59,9 @@ export function DocumentCommentSection({ documentId }: Props) {
         </div>
       </div>
 
-      <div className="divide-y divide-[#F0F0F0]">
+      <div className="divide-y divide-muted">
         {comments.length === 0 && (
-          <div className="px-5 py-8 text-center text-[#888]">
+          <div className="px-5 py-8 text-center text-muted">
             <MessageSquare size={28} className="mx-auto mb-2 text-[#E0E0E0]" />
             <p className="text-sm">Aucun commentaire — soyez le premier !</p>
           </div>
@@ -69,28 +69,28 @@ export function DocumentCommentSection({ documentId }: Props) {
         {comments.map((c: CommentDTO) => {
           const canDelete = isAdmin || c.username === username
           return (
-            <div key={c.id} className="px-5 py-4 group hover:bg-[#FAFAFA] transition-colors">
+            <div key={c.id} className="px-5 py-4 group hover:bg-subtle transition-colors">
               <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-[#F5A800] flex items-center justify-center text-xs font-bold text-[#1A1A1A] shrink-0 mt-0.5">
+                <div className="w-7 h-7 rounded-full bg-[#F5A800] flex items-center justify-center text-xs font-bold text-primary shrink-0 mt-0.5">
                   {c.username[0]?.toUpperCase() ?? '?'}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-[#1A1A1A]">{c.username}</span>
+                    <span className="text-sm font-semibold text-primary">{c.username}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-[#888]">{formatDate(c.createdAt)}</span>
+                      <span className="text-xs text-muted">{formatDate(c.createdAt)}</span>
                       {canDelete && (
                         <button
                           onClick={() => deleteMutation.mutate(c.id)}
                           disabled={deleteMutation.isPending && deleteMutation.variables === c.id}
-                          className="p-1 rounded text-[#CCC] hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-30"
+                          className="p-1 rounded text-ghost hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 disabled:opacity-30"
                         >
                           <Trash2 size={13} />
                         </button>
                       )}
                     </div>
                   </div>
-                  <p className="text-sm text-[#555] mt-1 leading-relaxed whitespace-pre-wrap">{c.content}</p>
+                  <p className="text-sm text-secondary mt-1 leading-relaxed whitespace-pre-wrap">{c.content}</p>
                 </div>
               </div>
             </div>
@@ -98,14 +98,14 @@ export function DocumentCommentSection({ documentId }: Props) {
         })}
       </div>
 
-      <form onSubmit={handleSubmit} className="px-5 py-4 border-t border-[#F0F0F0] flex gap-3">
+      <form onSubmit={handleSubmit} className="px-5 py-4 border-t border-muted flex gap-3">
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Ajouter un commentaire…"
           rows={2}
           maxLength={2000}
-          className="flex-1 px-3 py-2 text-sm border border-[#E0E0E0] rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[#F5A800] placeholder-[#AAA]"
+          className="flex-1 px-3 py-2 text-sm border border-strong rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-[#F5A800] placeholder-[#AAA]"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleSubmit(e as any)
           }}

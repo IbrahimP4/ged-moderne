@@ -71,7 +71,7 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
       }`}
     >
       <span
-        className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${
+        className={`absolute top-0.5 w-4 h-4 rounded-full bg-card shadow transition-transform duration-200 ${
           value ? 'translate-x-4' : 'translate-x-0.5'
         }`}
       />
@@ -524,7 +524,7 @@ export function PlaceSignatureModal({ open, onClose, doc, onSigned }: Props) {
         {/* Back */}
         <button
           onClick={onClose}
-          className="flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors px-2.5 py-1.5 rounded-lg hover:bg-white/5"
+          className="flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors px-2.5 py-1.5 rounded-lg hover:bg-card/5"
         >
           <ArrowLeft size={15} />
           Retour
@@ -542,7 +542,7 @@ export function PlaceSignatureModal({ open, onClose, doc, onSigned }: Props) {
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={currentPage <= 1}
-                  className="p-1 rounded text-gray-500 hover:text-white hover:bg-white/8 disabled:opacity-20 transition-colors"
+                  className="p-1 rounded text-gray-500 hover:text-white hover:bg-card/8 disabled:opacity-20 transition-colors"
                 >
                   <ChevronLeft size={14} />
                 </button>
@@ -552,7 +552,7 @@ export function PlaceSignatureModal({ open, onClose, doc, onSigned }: Props) {
                 <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage >= totalPages}
-                  className="p-1 rounded text-gray-500 hover:text-white hover:bg-white/8 disabled:opacity-20 transition-colors"
+                  className="p-1 rounded text-gray-500 hover:text-white hover:bg-card/8 disabled:opacity-20 transition-colors"
                 >
                   <ChevronRight size={14} />
                 </button>

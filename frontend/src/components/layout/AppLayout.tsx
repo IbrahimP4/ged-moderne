@@ -17,7 +17,7 @@ export function AppLayout() {
   if (!token) return <Navigate to="/login" replace />
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F4F4F4]">
+    <div className="flex h-screen overflow-hidden bg-page">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {sidebarOpen && (
@@ -32,7 +32,7 @@ export function AppLayout() {
         <header className="md:hidden shrink-0 flex items-center justify-between px-4 py-3 bg-[#141414] border-b border-white/10">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-card/10 transition-colors"
             aria-label="Ouvrir le menu"
           >
             <Menu size={20} />

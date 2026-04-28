@@ -43,7 +43,7 @@ function NavItem({
       <span className="shrink-0">{icon}</span>
       <span className="flex-1">{label}</span>
       {badge != null && badge > 0 && (
-        <span className="bg-[#F5A800] text-[#1A1A1A] text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+        <span className="bg-[#F5A800] text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
           {badge > 99 ? '99+' : badge}
         </span>
       )}
@@ -95,7 +95,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
         </div>
         <button
           onClick={onClose}
-          className="md:hidden p-1.5 rounded-md text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+          className="md:hidden p-1.5 rounded-md text-gray-500 hover:text-white hover:bg-card/10 transition-colors"
           aria-label="Fermer"
         >
           <X size={16} />
@@ -167,7 +167,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-md bg-[#F5A800] flex items-center justify-center text-xs font-bold text-[#1A1A1A] shrink-0">
+            <div className="w-7 h-7 rounded-md bg-[#F5A800] flex items-center justify-center text-xs font-bold text-primary shrink-0">
               {username?.[0]?.toUpperCase() ?? '?'}
             </div>
             <span className="text-sm text-gray-300 truncate">{username}</span>
@@ -175,7 +175,7 @@ export function Sidebar({ isOpen = false, onClose }: SidebarProps) {
           <div className="flex items-center gap-1">
             <button
               onClick={toggleDark}
-              className="p-1.5 rounded-md text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-1.5 rounded-md text-gray-500 hover:text-white hover:bg-card/10 transition-colors"
               title={dark ? 'Mode clair' : 'Mode sombre'}
             >
               {dark ? <Sun size={15} /> : <Moon size={15} />}

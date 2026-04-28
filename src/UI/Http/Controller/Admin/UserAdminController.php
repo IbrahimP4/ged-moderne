@@ -8,6 +8,8 @@ use App\Application\User\Command\ChangeUserRoleCommand;
 use App\Application\User\Command\ChangeUserRoleHandler;
 use App\Application\User\Command\CreateUserCommand;
 use App\Application\User\Command\CreateUserHandler;
+use App\Application\User\Command\DeleteUserCommand;
+use App\Application\User\Command\DeleteUserHandler;
 use App\Application\User\Query\ListUsersHandler;
 use App\Domain\User\ValueObject\UserId;
 use App\Infrastructure\Security\SecurityUser;
@@ -27,6 +29,7 @@ final class UserAdminController extends AbstractController
         private readonly ListUsersHandler $listUsersHandler,
         private readonly CreateUserHandler $createUserHandler,
         private readonly ChangeUserRoleHandler $changeRoleHandler,
+        private readonly DeleteUserHandler $deleteUserHandler,
     ) {}
 
     #[Route('', name: 'list', methods: ['GET'])]
@@ -115,5 +118,20 @@ final class UserAdminController extends AbstractController
         }
 
         return $this->json(['message' => 'Rôle mis à jour avec succès.']);
+    }
+
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'])]
+    public function delete(string $id, #[CurrentUser] SecurityUser $user): JsonResponse
+    {
+        try {
+            ($this->deleteUserHandler)(new DeleteUserCommand(
+                targetUserId: UserId::fromString($id),
+                deletedBy:    $user->getDomainUser()->getId(),
+            ));
+        } catch (\DomainException $e) {
+            return $this->json(['error' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return $this->json(['message' => 'Utilisateur supprimé avec succès.']);
     }
 }
